@@ -1,14 +1,15 @@
 <div>
     <div style="text-align: center">
         <livewire:calendar
-
+            before-calendar-view="/livewire/calendar/before"
+            :drag-and-drop-enabled="false"
         />
     </div>
     <div class="container mx-auto mt-4 p-5 bg-base-100 rounded-box">
 
         <div class="grid grid-cols-2 gap-5">
             <div>
-                <button class="btn btn-secondary" wire:click="create()"><i class="fa-solid fa-user mr-1"></i>Apartar Laboratorio</button>
+                <button class="btn btn-secondary" wire:click="create()"><i class="fa-solid fa-calendar mr-1"></i>Apartar Laboratorio</button>
             </div>
             <div class="form-control">
                 <div class="relative">
