@@ -59,8 +59,8 @@ class ReporteFallas extends Component
 
 
         session()->flash('message',
-            ($this->id_falla) 
-            ? 'Falla actualizada correctamente.' 
+            ($this->id_falla)
+            ? 'Falla actualizada correctamente.'
             : 'Falla registrada correctamente.');
 
         $this->closeModal();
@@ -100,8 +100,8 @@ class ReporteFallas extends Component
     public function delete($id)
     {
         ModelsReporteFallas::findOrFail($id)->delete();
-        
-        
+
+
         session()->flash('message', 'Registro de falla eliminada correctamente');
     }
 

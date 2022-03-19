@@ -50,14 +50,31 @@
                 </tr>
                 </thead>
                 <tbody>
+                @forelse ($labs as $lab)
+                    <tr>
+                        <td>{{ $lab->id }}</td>
+                        <td>{{ $lab->nombre }}</td>
+                        @if($lab->estado == true )
+                            <td>Activo</td>
+                        @else
+                            <td>Inactivo</td>
+                        @endif
+                        <td>
+                            <div class="flex gap-2">
+                                <button class="btn btn-accent" wire:click="delete({{ $lab->id }})"><i class="fa-solid fa-trash-can mr-1"></i>Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
                     <div class="alert alert-info mb-4">
                         <div class="flex-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <label>No hay laboratorios registrados en el sistema.</label>
+                            <label>No hay usuarios registrados en el sistema.</label>
                         </div>
                     </div>
+                @endforelse
                 </tbody>
             </table>
         </div>
