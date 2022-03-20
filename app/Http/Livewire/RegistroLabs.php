@@ -44,8 +44,8 @@ class RegistroLabs extends Component
 
         session()->flash('message',
             ($this->lab_id)
-                ? 'Falla actualizada correctamente.'
-                : 'Falla registrada correctamente.');
+                ? 'Laboratorio actualizada correctamente.'
+                : 'Laboratorio registrada correctamente.');
 
         $this->closeModal();
         $this->clearInputs();
