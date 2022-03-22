@@ -10,5 +10,5 @@ class CalendarInstructors extends Model
     use HasFactory;
     protected $guarded = ["id"];
 
-    protected $table = "calendar_labs";
+    protected $table = "calendar_instructors";
 }

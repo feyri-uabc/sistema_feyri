@@ -47,11 +47,14 @@
 .days {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    overflow-x: auto;
 }
 
 .days .box {
     transition: 200ms;
     background-color: rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    min-width: 8rem;
 }
 
 .days .box:hover:before {
@@ -65,7 +68,6 @@
 
 .days .box:hover {
     transition: 200ms;
-    border-radius: 0.5em;
     transform: scale(1.1);
     background-color: white;
 }

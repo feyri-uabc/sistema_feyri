@@ -17,7 +17,7 @@ class CreateCalendarLabsTable extends Migration
             $table->increments("id");
             $table->string("name")->nullable(false);
             $table->string("description")->nullable(false);
-            //$table->timestamps();
+            $table->timestamps();
         });
     }
 

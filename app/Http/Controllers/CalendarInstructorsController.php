@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CalendarInstructors;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DB;
 
 class CalendarInstructorsController extends Controller
 {
@@ -12,9 +13,9 @@ class CalendarInstructorsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(): \Illuminate\Http\Response
+    public function index()
     {
-        return CalendarInstructors::orderBy("name")->get();
+	return CalendarInstructors::orderBy("id")->get();
     }
 
     /**
@@ -31,8 +32,8 @@ class CalendarInstructorsController extends Controller
         ]);
 
         $instructor = new CalendarInstructors([
-            "name" => $request->input('title'),
-            "contact" => $request->input('title')
+            "name" => $request->input('name'),
+            "contact" => $request->input('contact')
         ]);
 
         $instructor->save();

@@ -21,10 +21,10 @@ class CreateCalendarReservationsTable extends Migration
             $table->integer("select_month")->nullable(false);
             $table->integer("select_day")->nullable(false);
             $table->integer("select_hour")->nullable(false);
-            $table->timestamp("created_at")->useCurrent();
 
             $table->foreign("lab_id")->references("id")->on("calendar_labs")->onDelete('cascade');
             $table->foreign("instructor_id")->references("id")->on("calendar_instructors")->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

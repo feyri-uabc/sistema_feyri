@@ -14,7 +14,7 @@ class CalendarReservationsController extends Controller
      */
     public function index()
     {
-        CalendarReservations::orderBy("id")->get();
+        return CalendarReservations::orderBy("id")->get();
     }
 
     /**
@@ -26,21 +26,21 @@ class CalendarReservationsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'lab' => 'integer|required',
-            'instructor' => 'integer|required',
-            'year' => 'integer|required',
-            'month' => 'integer|required',
-            'day' => 'integer|required',
-            'hour' => 'integer|required',
+            'lab_id' => 'integer|required',
+            'instructor_id' => 'integer|required',
+            'select_year' => 'integer|required',
+            'select_month' => 'integer|required',
+            'select_day' => 'integer|required',
+            'select_hour' => 'integer|required',
         ]);
 
         $reservation = new CalendarReservations([
-            "lab_id" => $request->input('lab'),
-            "instructor_id" => $request->input('instructor'),
-            "select_year" => $request->input('year'),
-            "select_month" => $request->input('month'),
-            "select_day" => $request->input('day'),
-            "select_hour" => $request->input('hour'),
+            "lab_id" => $request->input('lab_id'),
+            "instructor_id" => $request->input('instructor_id'),
+            "select_year" => $request->input('select_year'),
+            "select_month" => $request->input('select_month'),
+            "select_day" => $request->input('select_day'),
+            "select_hour" => $request->input('select_hour'),
         ]);
 
         $reservation->save();

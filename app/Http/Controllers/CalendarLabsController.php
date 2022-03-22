@@ -33,8 +33,8 @@ class CalendarLabsController extends Controller
         ]);
 
         $lab = new CalendarLabs([
-            "name" => $request->input('title'),
-            "contact" => $request->input('title')
+            "name" => $request->input('name'),
+            "description" => $request->input('description')
         ]);
 
         $lab->save();

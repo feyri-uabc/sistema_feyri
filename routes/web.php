@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/calendario', function () {
-    $path = public_path() . "\calendario\index.html";
+    $path = public_path() . "\calendario\index.php";
     ob_start(); require($path); return ob_get_clean();
 });
 
