@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CalendarInstructors;
 use Illuminate\Http\Request;
-use App\Http\Controllers\DB;
 
 class CalendarInstructorsController extends Controller
 {
