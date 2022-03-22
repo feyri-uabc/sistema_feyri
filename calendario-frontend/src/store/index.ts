@@ -7,9 +7,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        token_exist: false,
+        //
         laboratories: null,
         instructors: null,
-        reservations: null
+        reservations: null,
+        //
+        current_lab: null
     },
     getters: {
         stateIsEmpty(state: any) {

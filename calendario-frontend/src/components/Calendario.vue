@@ -9,7 +9,7 @@
                 {{ time + 1*start_time }}:00
             </div>
         </div>
-        <div class="days">
+        <div class="days px-2">
             <div class="row-days" v-if="selectValidDays(index)" v-for="(day, index) in days" :key="'_' + index"
                  :aria-selected="isDateValid(index)" :id="current_week + '_' + days_week[index]">
                 <div class="row-head">{{ getDaysFormat(index) }}</div>
@@ -55,6 +55,7 @@
     background-color: rgba(0, 0, 0, 0.03);
     overflow: hidden;
     min-width: 8rem;
+    user-select: none;
 }
 
 .days .box:hover:before {

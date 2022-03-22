@@ -1,16 +1,15 @@
 <template>
   <div id="app">
       <Header>
-          <template v-if="true" v-slot:right>
+          <template v-slot:right>
               <div class="flex items-center justify-center">
-                  <div v-if="token_exist" class="dropdown dropdown-end mr-5">
-                      <label tabindex="0" class="btn btn-sm px-5">LABORATORIO</label>
+                  <div class="dropdown dropdown-end mr-5">
+                      <label tabindex="0" class="btn btn-sm px-5">LABORATORIO {{$store.state.current_lab}}</label>
                       <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                          <li><a>Seleccionar Todos</a></li>
-                          <li><a>Lab #458</a></li>
-                          <li><a>Lab #486</a></li>
-                          <hr/>
-                          <li><a>Agregar Laboratorio</a></li>
+                          <li><a @click="select_lab(null)">Deseleccionar</a></li>
+                          <li v-for="lab of $store.state.laboratories"><a @click="select_lab(lab.id)">Lab {{lab.name}}</a></li>
+                          <hr v-if="$store.state.token_exist"/>
+                          <li v-if="$store.state.token_exist"><a>Agregar Laboratorio</a></li>
                       </ul>
                   </div>
                   <label class="swap swap-rotate">
@@ -54,10 +53,14 @@ import Cookie from "@/services/Cookie";
     components: { Header }
 })
 export default class App extends Vue {
-    token_exist = false
     mounted() {
         if ( this.$store.getters.stateIsEmpty ) this.$store.commit("loadData")
-        this.token_exist = Cookie.containKey('remember_web')
+        // TODO cambiar !Cookie a Cookie
+        this.$store.state.token_exist = !Cookie.containKey('remember_web')
+    }
+
+    select_lab(id: any) {
+        this.$store.state.current_lab = id
     }
 }
 </script>

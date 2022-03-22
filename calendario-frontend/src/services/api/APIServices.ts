@@ -12,10 +12,10 @@ export default class APIServices {
             .then((result: Array<T> | []) => result)
     }
 
-    private static async Delete<T>(_path: string, request: RequestInit = { method: "DELETE" }): Promise<any> {
+    private static async Delete<T>(_path: string, request: RequestInit = { method: "DELETE" }): Promise<string | null> {
         return await fetch(this.path + _path, request)
-            .then(data => data.json())
-            .then((result: Array<T> | []) => result)
+            .then(data => data.text())
+            .then((result: string | null) => result)
     }
 
     private static async Create<T>(_path: string, item: any): Promise<T | null> {
@@ -38,8 +38,8 @@ export default class APIServices {
         return this.GetAll<ILaboratories>("labs")
     }
 
-    public static async DeleteLaboratory(id: number): Promise<Array<ILaboratories | null>> {
-        return this.GetAll<ILaboratories>("labs/" + id)
+    public static async DeleteLaboratory(id: number): Promise<string | null> {
+        return this.Delete<ILaboratories>("labs/" + id)
     }
 
     public static async CreateLaboratory(lab: ILaboratories): Promise<ILaboratories | null> {
@@ -52,8 +52,8 @@ export default class APIServices {
         return this.GetAll<IInstructors>("instructors")
     }
 
-    public static async DeleteInstructor(id: number): Promise<Array<IInstructors | null>> {
-        return this.GetAll<IInstructors>("IInstructors/" + id)
+    public static async DeleteInstructor(id: number): Promise<string | null> {
+        return this.Delete<IInstructors>("IInstructors/" + id)
     }
 
     public static async CreateIInstructor(instructor: IInstructors): Promise<IInstructors | null> {
@@ -66,8 +66,8 @@ export default class APIServices {
         return this.GetAll<IReservations>("reservations")
     }
 
-    public static async DeleteReservation(id: number): Promise<Array<IReservations | null>> {
-        return this.GetAll<IReservations>("reservations/" + id)
+    public static async DeleteReservation(id: number): Promise<string | null> {
+        return this.Delete<IReservations>("reservations/" + id)
     }
 
     public static async CreateReservation(reservation: IReservations): Promise<IReservations | null> {
