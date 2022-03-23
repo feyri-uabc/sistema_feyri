@@ -5,18 +5,46 @@
       </div>
 
       <div v-if="show_alert_popup" class="alert_popup w-full h-full flex">
-          <div class="card bg-base-100 m-auto">
-              <div class="card-body">
-                  <h2 class="card-title">Card title!</h2>
-                  <p>If a dog chews shoes whose shoes does he choose?</p>
-                  <select @change="updateCurrentLabInput" class="select select-bordered w-full">
-                      <option disabled selected>Seleccionar Instructor</option>
-                      <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
-                  </select>
-                  <div class="card-actions justify-end pt-6">
-                      <button @click="reserved" class="btn">Aceptar</button>
-                      <button @click="show_alert_popup=false; current_data=[]" class="btn">Cancelar</button>
+          <div class="m-auto">
+              <div class="card bg-base-100 m-2">
+                  <div class="card-body">
+                      <h2 class="card-title">Reservacion de laboratorio</h2>
+                      <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <select @change="updateCurrentLabInput" class="select select-bordered w-full mt-4">
+                          <option disabled selected>Seleccionar Instructor</option>
+                          <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
+                      </select>
+
+                      <div class="form-control mt-4">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Reservacion unica</span>
+                              <input type="checkbox" v-model="reservation_unique" checked="checked" class="checkbox checkbox-primary">
+                          </label>
+                      </div>
+
+                      <div class="form-control" :style="'opacity: ' + (reservation_unique ? '0.5' : '1')">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Semanas a recordar</span>
+                              <input type="number" :disabled="reservation_unique" v-model="reservation_weeks" min="1" max="20" placeholder="Cantidad de semanas" class="input input-bordered ml-3 w-md">
+                          </label>
+                          <p v-if="!reservation_unique" class="text-xs">* Solo se realizaran las reservaciones que tengan fecha disponible</p>
+                      </div>
+
+                      <div class="card-actions justify-end pt-6">
+                          <button v-if="current_instructor" @click="reserved" class="btn">Aceptar</button>
+                          <button v-else class="btn btn-disabled" tabindex="-1" role="button">Aceptar</button>
+                          <button @click="show_alert_popup=false" class="btn">Cancelar</button>
+                      </div>
                   </div>
+              </div>
+          </div>
+      </div>
+
+      <div v-if="message_reservation.length > 0" class="alert_popup w-full h-full flex">
+          <div  class="m-auto">
+              <div class="card bg-base-100 m-2 p-8">
+                  <h2 class="px-10 w-80 font-black uppercase text-center">Creando reservacion</h2>
+                  <p class="text-center">{{message_reservation}}</p>
               </div>
           </div>
       </div>
@@ -41,16 +69,29 @@
     width: 100%;
     height: 100%;
 }
+
+.boxCalendar {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    padding: 0.2rem;
+}
+
+.boxCalendar p {
+    line-height: 0.6rem;
+}
+
+.boxCalendar span {
+    width: 100%;
+    line-height: 0.8rem;
+}
 </style>
 
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import Calendario, {GetCalendarFieldId} from "@/components/Calendario.vue";
 import IReservations from "@/services/api/interfaces/IReservations";
-import ILaboratories from "@/services/api/interfaces/ILaboratories";
 import APIServices from "@/services/api/APIServices";
-import Cookie from "@/services/Cookie";
-import store from "@/store";
 
 @Component({ components: {Calendario} })
 export default class Home extends Vue {
@@ -59,9 +100,32 @@ export default class Home extends Vue {
     current_data = []
     before_current_lab: any = null
     current_instructor: any = null
+    reservation_unique = true
+    reservation_weeks = 1
+    message_reservation = ""
+
+    createBoxCalendar(instructor_id: number): string {
+        let instructor = this.$store.state.instructors.filter((item: any) => item.id == instructor_id)
+        if (instructor.length < 1) return ""
+        let { id, name, contact } = instructor[0]
+
+        return `<div class="boxCalendar bg-base-300">
+                    <p class="text-xs font-bold"><span class="opacity-75 font-regular">Docente:</span><br/>${name}</p>
+                    <p class="text-xs font-bold"><span class="opacity-75 font-regular">Contacto:</span><br/>${contact}</p>
+                </div>`
+    }
 
     updateCurrentLabInput(e: any) {
         this.current_instructor = e.target.value
+    }
+
+    @Watch("show_alert_popup")
+    updateAlertPopUp() {
+        if (this.show_alert_popup) return
+        this.current_data = []
+        this.current_instructor = null
+        this.reservation_weeks = 1
+        this.reservation_unique = true
     }
 
     @Watch("updateCalendar")
@@ -101,24 +165,35 @@ export default class Home extends Vue {
         }
     }
 
-    reserved() {
+    async reserved() {
         // TODO AGREGAR LA POSIBILIDAD DE REPETIR POR SEMANA
         if (!this.current_lab && !this.current_instructor) return
         let date = this.current_data
-        APIServices.CreateReservation({
-            lab_id: this.current_lab,
-            instructor_id: this.current_instructor,
-            select_year: date[1],
-            select_month: date[2],
-            select_day: date[3],
-            select_hour: date[4]
-        }).then((result: IReservations | null) => {
-            if (!result) return; this.$store.state.reservations.push(result)
-            this.show_alert_popup = false
-            this.updateInfoCalendar()
-            this.current_data = []
-            this.current_instructor = null
-        })
+
+        let weeks: number = 1
+        if (!this.reservation_unique) weeks = this.reservation_weeks
+
+        let selectDate = new Date(new Date(date[1], date[2], date[3]))
+        for (let week = 0; week < weeks; week++, selectDate.setDate(selectDate.getDate() + 7)) {
+            let day = selectDate.getDate()
+            let month = selectDate.getMonth()
+            let year = selectDate.getFullYear()
+
+            if (weeks > 1) this.message_reservation = `Mes: ${month}, Dia: ${day}, Hora: ${date[4]}`
+
+            let result = await APIServices.CreateReservation({
+                lab_id: this.current_lab,
+                instructor_id: this.current_instructor,
+                select_year: year,
+                select_month: month,
+                select_day: day,
+                select_hour: date[4]
+            })
+            if (result) this.$store.state.reservations.push(result)
+            this.message_reservation = ""
+        }
+        this.show_alert_popup = false
+        this.updateInfoCalendar()
     }
 
     registerReservation(id: any) {
@@ -140,16 +215,12 @@ export default class Home extends Vue {
         this.updateInfoCalendar()
     }
 
-    createBoxCalendar(name: string): string {
-        return `<div class="w-full h-full bg-red-500">${name}</div>`
-    }
-
     updateInfoCalendar() {
         for (let reservation = 0; reservation < this.$store.state.reservations.length; reservation++) {
             let {select_day, select_hour, select_month, select_year, lab_id , instructor_id, id}: IReservations = this.$store.state.reservations[reservation]
             let component = GetCalendarFieldId(select_year, select_month, select_day, select_hour)
             if (component && lab_id == this.current_lab) {
-                component.innerHTML = this.createBoxCalendar(instructor_id + "-" + id + "-" + lab_id)
+                component.innerHTML = this.createBoxCalendar(instructor_id)
                 if (this.$store.state.token_exist) {
                     // TODO cambiar !Cookie a Cookie
                     component.onclick = () => this.eventClickBoxCalendar(component, id, lab_id)

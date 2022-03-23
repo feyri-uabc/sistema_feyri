@@ -10,11 +10,10 @@
             </div>
         </div>
         <div class="days px-2">
-            <div class="row-days" v-if="selectValidDays(index)" v-for="(day, index) in days" :key="'_' + index"
+            <div class="row-days" v-if="selectValidDays(index)" v-for="(day, index) in days" :title="day" :key="'_' + index"
                  :aria-selected="isDateValid(index)" :id="current_week + '_' + days_week[index]">
                 <div class="row-head">{{ getDaysFormat(index) }}</div>
-                <div :id="'_' + current_year + '_' + (current_month+1) + '_' + days_week[index] + '_' + (time + 1*start_time)" class="box"
-                     v-for="time in (end_time - start_time)"/>
+                <div v-for="time in (end_time - start_time)" :id="createDateID(index, time)" class="box"/>
             </div>
         </div>
         <div class="flex flex-wrap md:flex-wrap w-full col-start-1 col-end-3 align-center justify-between mt-10 print:hidden">
@@ -112,6 +111,12 @@ export default class Calendario extends Vue {
     mounted() {
         this.days_for_week()
         this.current_date = (this.current_week * 7) + (new Date().getDate() % 7)
+    }
+
+    createDateID(index: number, time: number) {
+        let incrementForChangeMonth = 0
+        if (this.days_week[index - 1] > this.days_week[index]) incrementForChangeMonth = 1
+        return '_' + this.current_year + '_' + (this.current_month + incrementForChangeMonth) + '_' + this.days_week[index] + '_' + (time + parseInt(this.start_time + ""))
     }
 
     isDateValid(date: number) {

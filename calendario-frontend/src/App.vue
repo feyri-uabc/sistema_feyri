@@ -9,6 +9,7 @@
                           <li><a @click="select_lab(null)">Deseleccionar</a></li>
                           <li v-for="lab of $store.state.laboratories"><a @click="select_lab(lab.id)">Lab {{lab.name}}</a></li>
                           <hr v-if="$store.state.token_exist"/>
+                          <li v-if="$store.state.token_exist"><a>Agregar Instructor</a></li>
                           <li v-if="$store.state.token_exist"><a>Agregar Laboratorio</a></li>
                       </ul>
                   </div>
