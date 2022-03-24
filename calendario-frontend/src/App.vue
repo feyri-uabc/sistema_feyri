@@ -9,8 +9,8 @@
                           <li><a @click="select_lab(null)">Deseleccionar</a></li>
                           <li v-for="lab of $store.state.laboratories"><a @click="select_lab(lab.id)">Lab {{lab.name}}</a></li>
                           <hr v-if="$store.state.token_exist"/>
-                          <li v-if="$store.state.token_exist"><a>Agregar Instructor</a></li>
-                          <li v-if="$store.state.token_exist"><a>Agregar Laboratorio</a></li>
+                          <li v-if="$store.state.token_exist"><a @click="registerInstructor">Agregar Instructor</a></li>
+                          <li v-if="$store.state.token_exist"><a @click="registerLab">Agregar Laboratorio</a></li>
                       </ul>
                   </div>
                   <label class="swap swap-rotate">
@@ -21,9 +21,86 @@
               </div>
           </template>
       </Header>
+
+      <div v-if="create_lab_popup" class="alert_popup w-full h-full flex">
+          <div class="m-auto">
+              <div class="card bg-base-100 m-2">
+                  <div class="card-body">
+                      <h2 class="card-title">Agregar Laboratorio</h2>
+
+                      <div class="form-control mt-5">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Nombre: </span>
+                              <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_name">
+                          </label>
+                      </div>
+
+                      <div class="form-control mt-5">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Description: </span>
+                              <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_description">
+                          </label>
+                      </div>
+
+                      <div class="card-actions justify-end pt-6">
+                          <button @click="reservedLab" class="btn">Aceptar</button>
+                          <button @click="create_lab_popup=false" class="btn">Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div v-if="create_lab_message.length > 0" class="alert_popup w-full h-full flex">
+          <div  class="m-auto">
+              <div class="card bg-base-100 m-2 p-8">
+                  <h2 class="px-10 w-80 font-black uppercase text-center">Creando laboratorio</h2>
+                  <p class="text-center">{{create_lab_message}}</p>
+              </div>
+          </div>
+      </div>
+
+      <div v-if="create_instructor_popup" class="alert_popup w-full h-full flex">
+          <div class="m-auto">
+              <div class="card bg-base-100 m-2">
+                  <div class="card-body">
+                      <h2 class="card-title">Agregar Instructor</h2>
+
+                      <div class="form-control mt-5">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Nombre: </span>
+                              <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_name">
+                          </label>
+                      </div>
+
+                      <div class="form-control mt-5">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Contacto: </span>
+                              <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_contact">
+                          </label>
+                      </div>
+
+                      <div class="card-actions justify-end pt-6">
+                          <button @click="reservedInstructor" class="btn">Aceptar</button>
+                          <button @click="create_instructor_popup=false" class="btn">Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div v-if="create_instructor_message.length > 0" class="alert_popup w-full h-full flex">
+          <div  class="m-auto">
+              <div class="card bg-base-100 m-2 p-8">
+                  <h2 class="px-10 w-80 font-black uppercase text-center">Creando Instructor</h2>
+                  <p class="text-center">{{create_instructor_message}}</p>
+              </div>
+          </div>
+      </div>
+
       <router-view/>
       <footer class="pb-10 m-auto text-center">
-          <p>Todos los derechos reservados</p>
+          <p>Copyright © 2022 - All right reserved by UABC FEyRI</p>
       </footer>
   </div>
 </template>
@@ -43,25 +120,98 @@
      border-radius: 5rem;
      border: 0.25rem solid rgba(0, 0, 0, 0.35);
  }
+
+.alert_popup {
+    top: 0;
+    z-index: 99999999;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(15px);
+}
+
+.alert_popup::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.05);
+    width: 100%;
+    height: 100%;
+}
 </style>
 
 <script lang="ts">
 import Header from "@/components/Header.vue";
-import {Component, Vue} from "vue-property-decorator";
+import {Component, Vue, Watch} from "vue-property-decorator";
 import Cookie from "@/services/Cookie";
+import APIServices from "@/services/api/APIServices";
 
 @Component({
     components: { Header }
 })
 export default class App extends Vue {
+    lab_name = ""
+    lab_description = ""
+    create_lab_popup = false
+    create_lab_message = ""
+
+    instructor_name = ""
+    instructor_contact = ""
+    create_instructor_popup = false
+    create_instructor_message = ""
+
     mounted() {
         if ( this.$store.getters.stateIsEmpty ) this.$store.commit("loadData")
         // TODO cambiar !Cookie a Cookie
-        this.$store.state.token_exist = !Cookie.containKey('remember_web')
+        this.$store.state.token_exist = Cookie.containKey('remember_web')
     }
 
     select_lab(id: any) {
         this.$store.state.current_lab = id
     }
+
+    registerLab() {
+        this.create_lab_popup = true
+    }
+
+    registerInstructor() {
+        this.create_instructor_popup = true
+    }
+
+    @Watch("create_lab_popup")
+    updateLabPopUp() {
+        if (this.create_lab_popup) return
+        this.lab_name = ""
+        this.lab_description = ""
+    }
+
+    @Watch("create_instructor_popup")
+    updateInstructorPopUp() {
+        if (this.create_instructor_popup) return
+        this.instructor_name = ""
+        this.instructor_contact = ""
+    }
+
+    async reservedLab() {
+        this.create_lab_message = "Laboratorio" + " " + this.lab_name + " " +"creado"
+        let result = await APIServices.CreateLaboratory({
+            name : this.lab_name,
+            description : this.lab_description
+        })
+        if (result) this.$store.state.laboratories.push(result)
+        this.create_lab_message = ""
+        this.create_lab_popup = false
+    }
+    async reservedInstructor() {
+        this.create_instructor_message = "Instructor" + " " + this.instructor_name + " " +"creado"
+        let result = await APIServices.CreateIInstructor({
+            name : this.instructor_name,
+            contact : this.instructor_contact
+        })
+        if (result) this.$store.state.instructors.push(result)
+        this.create_instructor_message = ""
+        this.create_instructor_popup = false
+    }
+
 }
 </script>

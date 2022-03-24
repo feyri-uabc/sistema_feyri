@@ -9,7 +9,6 @@
               <div class="card bg-base-100 m-2">
                   <div class="card-body">
                       <h2 class="card-title">Reservacion de laboratorio</h2>
-                      <p>If a dog chews shoes whose shoes does he choose?</p>
                       <select @change="updateCurrentLabInput" class="select select-bordered w-full mt-4">
                           <option disabled selected>Seleccionar Instructor</option>
                           <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
@@ -166,7 +165,6 @@ export default class Home extends Vue {
     }
 
     async reserved() {
-        // TODO AGREGAR LA POSIBILIDAD DE REPETIR POR SEMANA
         if (!this.current_lab && !this.current_instructor) return
         let date = this.current_data
 

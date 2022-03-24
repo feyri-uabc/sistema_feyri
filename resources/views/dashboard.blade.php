@@ -62,10 +62,10 @@
                     </svg>
                 </figure>
                 <div class="card-body items-center text-center">
-                  <h2 class="card-title">Apartado de laboratorios</h2>
-                  <p>Sistema para registro de apartado de laboratorios</p><br>
+                  <h2 class="card-title">Reservacion de laboratorios</h2>
+                  <p>Sistema para registro de reservacion de laboratorios</p><br>
                   <div class="card-actions">
-                      <a class="btn btn-primary" href="{{route('apartado-labs')}}">Acceder</a>
+                      <a class="btn btn-primary" href="{{route('calendario')}}">Acceder</a>
                   </div>
                 </div>
             </div>

@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/calendario', function () {
     $path = public_path() . "\calendario\index.html";
     ob_start(); require($path); return ob_get_clean();
-});
+})->name('calendario');
 
 Route::get('/', function () {
     return redirect('/login');
@@ -38,8 +38,6 @@ Route::middleware(['auth:sanctum','verified'])->group(function () {
 
     Route::get('/registro-tareas',RegistroTareas::class)->name('registro-tareas');
     Route::get('/reporte-fallas',ReporteFallas::class)->name('reporte-fallas');
-    Route::get('/apartado-labs',ApartadoLabs::class)->name('apartado-labs');
-    Route::get('registro-labs',RegistroLabs::class)->name('registro-labs');
 });
 
 

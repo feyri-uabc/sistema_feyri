@@ -2919,6 +2919,9 @@ html {
 .max-w-xl {
   max-width: 36rem;
 }
+.max-w-6xl {
+  max-width: 72rem;
+}
 .max-w-full {
   max-width: 100%;
 }
@@ -3109,6 +3112,9 @@ html {
 .border-b {
   border-bottom-width: 1px;
 }
+.border-r {
+  border-right-width: 1px;
+}
 .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
@@ -3127,6 +3133,10 @@ html {
 .border-gray-100 {
   --tw-border-opacity: 1;
   border-color: rgb(243 244 246 / var(--tw-border-opacity));
+}
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity));
 }
 .bg-white {
   --tw-bg-opacity: 1;
@@ -3335,6 +3345,9 @@ html {
 .pr-16 {
   padding-right: 4rem;
 }
+.pt-8 {
+  padding-top: 2rem;
+}
 .pt-10 {
   padding-top: 2.5rem;
 }
@@ -3404,6 +3417,9 @@ html {
 .tracking-widest {
   letter-spacing: 0.1em;
 }
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
@@ -3464,6 +3480,10 @@ html {
   --tw-text-opacity: 1;
   color: rgb(34 197 94 / var(--tw-text-opacity));
 }
+.text-error {
+  --tw-text-opacity: 1;
+  color: hsla(var(--er) / var(--tw-text-opacity));
+}
 .text-primary-content {
   --tw-text-opacity: 1;
   color: hsla(var(--pc) / var(--tw-text-opacity));
@@ -3476,9 +3496,13 @@ html {
   --tw-text-opacity: 1;
   color: hsla(var(--bc) / var(--tw-text-opacity));
 }
-.text-error {
+.text-gray-200 {
   --tw-text-opacity: 1;
-  color: hsla(var(--er) / var(--tw-text-opacity));
+  color: rgb(229 231 235 / var(--tw-text-opacity));
+}
+.text-gray-300 {
+  --tw-text-opacity: 1;
+  color: rgb(209 213 219 / var(--tw-text-opacity));
 }
 .underline {
   -webkit-text-decoration-line: underline;
@@ -3769,6 +3793,13 @@ html {
 .disabled\:opacity-25:disabled {
   opacity: 0.25;
 }
+@media (prefers-color-scheme: dark) {
+
+  .dark\:bg-gray-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+  }
+}
 @media (min-width: 640px) {
 
   .sm\:col-span-4 {
@@ -3885,6 +3916,10 @@ html {
 
   .sm\:items-center {
     align-items: center;
+  }
+
+  .sm\:justify-start {
+    justify-content: flex-start;
   }
 
   .sm\:justify-center {

@@ -38,7 +38,6 @@
       @if(Auth::user()->user_type === 'admin')
             <li>
                 <a href="{{ route('alta-usuario') }}">{{ __('Register user') }}</a>
-                <a href="{{route('registro-labs')}}">{{__('Register Labs')}}</a>
             </li>
       @endif
             <li>
