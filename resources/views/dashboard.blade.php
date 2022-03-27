@@ -65,7 +65,7 @@
                   <h2 class="card-title">Reservacion de laboratorios</h2>
                   <p>Sistema para registro de reservacion de laboratorios</p><br>
                   <div class="card-actions">
-                      <a class="btn btn-primary" href="{{route('calendario')}}">Acceder</a>
+                      <a class="btn btn-primary" href="http://127.0.0.1:8000/calendario">Acceder</a>
                   </div>
                 </div>
             </div>
