@@ -15,7 +15,6 @@ DB_PASSWORD=
 Una vez realizado esto ahora volveremos a la terminal donde tenemos la direccion abierta del proyecto y vamos a escribir los siguientes comandos.
 ```
 composer install
-composer require asantibanez/livewire-calendar
 php artisan key:generate
 php artisan migrate
 php artisan storage:link
