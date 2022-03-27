@@ -6,6 +6,8 @@ use App\Http\Livewire\RegistroLabs;
 use App\Http\Livewire\RegistroTareas;
 use App\Http\Livewire\ReporteFallas;
 use App\Models\RegistroTareas as ModelsRegistroTareas;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,11 +20,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/calendario', function () {
-    $path = public_path() . "\calendario\index.html";
-    ob_start(); require($path); return ob_get_clean();
-})->name('calendario');
 
 Route::get('/', function () {
     return redirect('/login');

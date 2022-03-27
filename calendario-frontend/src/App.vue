@@ -163,7 +163,7 @@ export default class App extends Vue {
     mounted() {
         if ( this.$store.getters.stateIsEmpty ) this.$store.commit("loadData")
         // TODO cambiar !Cookie a Cookie
-        this.$store.state.token_exist = Cookie.containKey('remember_web')
+        this.$store.state.token_exist = Cookie.containKey('remember_session')
     }
 
     select_lab(id: any) {
