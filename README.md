@@ -29,4 +29,8 @@ npm install
 Una vez realizado esto ahora procedemos a ejecutar laravel mix de webpack.
 ```
 npm run dev
+cd calendario-frontend
+npm run build
+cd ..
+php artisan serve
 ```
