@@ -14,7 +14,28 @@
                           <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
                       </select>
 
-                      <div class="form-control mt-4">
+                      <div class="form-control">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Clase</span>
+                              <input @click="setReservationType('clase')" type="radio" name="radio-6" class="radio radio-primary" checked>
+                          </label>
+                      </div>
+                      <div class="form-control">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Taller</span>
+                              <input @click="setReservationType('taller')" type="radio" name="radio-6" class="radio radio-primary">
+                          </label>
+                      </div>
+                      <div class="form-control">
+                          <label class="label cursor-pointer">
+                              <span class="label-text">Examen</span>
+                              <input @click="setReservationType('examen')" type="radio" name="radio-6" class="radio radio-primary">
+                          </label>
+                      </div>
+
+                      <hr class="mx-4"/>
+
+                      <div class="form-control">
                           <label class="label cursor-pointer">
                               <span class="label-text">Reservacion unica</span>
                               <input type="checkbox" v-model="reservation_unique" checked="checked" class="checkbox checkbox-primary">
@@ -44,6 +65,18 @@
               <div class="card bg-base-100 m-2 p-8">
                   <h2 class="px-10 w-80 font-black uppercase text-center">Creando reservacion</h2>
                   <p class="text-center">{{message_reservation}}</p>
+              </div>
+          </div>
+      </div>
+
+      <div v-if="show_delete_reservation" class="alert_popup w-full h-full flex">
+          <div  class="m-auto">
+              <div class="card bg-base-100 m-2 p-8">
+                  <h2 class="px-10 w-80 font-black uppercase text-center">¿Desea eliminar la reservacion?</h2>
+                  <div class="card-actions justify-center pt-6">
+                      <button @click="eventClickDelete" class="btn">Aceptar</button>
+                      <button @click="eventClickDeleteClose" class="btn">Cancelar</button>
+                  </div>
               </div>
           </div>
       </div>
@@ -102,6 +135,14 @@ export default class Home extends Vue {
     reservation_unique = true
     reservation_weeks = 1
     message_reservation = ""
+    reservation_type = "clase"
+
+    current_delete_item: any = null
+    show_delete_reservation = false
+
+    setReservationType(type: string) {
+        this.reservation_type = type
+    }
 
     createBoxCalendar(instructor_id: number): string {
         let instructor = this.$store.state.instructors.filter((item: any) => item.id == instructor_id)
@@ -171,12 +212,15 @@ export default class Home extends Vue {
         let weeks: number = 1
         if (!this.reservation_unique) weeks = this.reservation_weeks
 
+        // TODO Agregar este campo al modelo de Reservacion
+        alert("el tipo de reservacion es " + this.reservation_type)
+
         let selectDate = new Date(new Date(date[1], date[2], date[3]))
         for (let week = 0; week < weeks; week++, selectDate.setDate(selectDate.getDate() + 7)) {
             let day = selectDate.getDate()
             let month = selectDate.getMonth()
-            let year = selectDate.getFullYear()
 
+            let year = selectDate.getFullYear()
             if (weeks > 1) this.message_reservation = `Mes: ${month}, Dia: ${day}, Hora: ${date[4]}`
 
             let result = await APIServices.CreateReservation({
@@ -187,10 +231,12 @@ export default class Home extends Vue {
                 select_day: day,
                 select_hour: date[4]
             })
+
             if (result) this.$store.state.reservations.push(result)
             this.message_reservation = ""
         }
         this.show_alert_popup = false
+        this.reservation_type = "clase"
         this.updateInfoCalendar()
     }
 
@@ -200,17 +246,27 @@ export default class Home extends Vue {
         this.current_data = id.split("_")
     }
 
+    eventClickDeleteClose() {
+        this.current_delete_item = null
+        this.show_delete_reservation = false
+    }
+
+    eventClickDelete() {
+        APIServices.DeleteReservation(this.current_delete_item.id)
+        this.current_delete_item.component.onclick = () => this.registerReservation(this.current_delete_item.component.id)
+        this.current_delete_item.component.innerHTML = ""
+        let reservation = this.$store.state.reservations
+
+        this.$store.state.reservations = reservation.filter((item: any) => item.id != this.current_delete_item.id)
+        this.updateInfoCalendar()
+        this.eventClickDeleteClose()
+    }
+
     eventClickBoxCalendar(component: any, id: any, lab_id: any) {
         if (!this.current_lab) return alert("Selecciona un laboratorio para eliminar")
         if (this.current_lab != lab_id) return alert("Selecciona el laboratorio correcto")
-
-        component.onclick = () => this.registerReservation(component.id)
-        component.innerHTML = ""
-        APIServices.DeleteReservation(id)
-
-        let reservation = this.$store.state.reservations
-        this.$store.state.reservations = reservation.filter((item: any) => item.id != id)
-        this.updateInfoCalendar()
+        this.show_delete_reservation = true
+        this.current_delete_item = { component, id }
     }
 
     updateInfoCalendar() {
