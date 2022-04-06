@@ -6,4 +6,5 @@ export default interface IReservations {
     select_month: number
     select_day: number
     select_hour: number
+    tipo: string
 }

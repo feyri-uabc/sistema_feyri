@@ -1,7 +1,8 @@
 <template>
     <div class="calendar">
-        <div class="col-start-1 col-end-3 mb-10 mt-2">
+        <div class="col-start-1 col-end-3 mb-7 mt-2">
             <h1 class="font-black uppercase text-2xl text-center">Horario semanal del mes de {{ months[current_month] }}</h1>
+            <slot name="subtitle"></slot>
         </div>
         <div class="time">
             <div class="row-head"></div>
@@ -53,7 +54,7 @@
     transition: 200ms;
     background-color: rgba(0, 0, 0, 0.03);
     overflow: hidden;
-    min-width: 8rem;
+    min-width: 14rem;
     user-select: none;
 }
 
@@ -78,7 +79,7 @@
 }
 
 .box {
-    height: 4rem;
+    height: 5rem;
     margin: 0.3rem;
     display: flex;
     align-items: center;

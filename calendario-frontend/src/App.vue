@@ -43,7 +43,8 @@
                       </div>
 
                       <div class="card-actions justify-end pt-6">
-                          <button @click="reservedLab" class="btn">Aceptar</button>
+                          <button v-if="lab_name.length > 1 && lab_description.length > 1" class="btn">Aceptar</button>
+                          <button v-else disabled @click="reservedLab" class="btn">Aceptar</button>
                           <button @click="create_lab_popup=false" class="btn">Cancelar</button>
                       </div>
                   </div>
@@ -81,7 +82,8 @@
                       </div>
 
                       <div class="card-actions justify-end pt-6">
-                          <button @click="reservedInstructor" class="btn">Aceptar</button>
+                          <button v-if="instructor_name.length > 1 && instructor_contact.length > 1" class="btn">Aceptar</button>
+                          <button v-else disabled @click="reservedInstructor" class="btn">Aceptar</button>
                           <button @click="create_instructor_popup=false" class="btn">Cancelar</button>
                       </div>
                   </div>
@@ -162,8 +164,13 @@ export default class App extends Vue {
 
     mounted() {
         if ( this.$store.getters.stateIsEmpty ) this.$store.commit("loadData")
-        // TODO cambiar !Cookie a Cookie
         this.$store.state.token_exist = Cookie.containKey('remember_session')
+        window.onkeydown = (e: any) => {
+            if (e.keyCode == 27) {
+                this.create_instructor_popup = false
+                this.create_lab_popup = false
+            }
+        }
     }
 
     select_lab(id: any) {

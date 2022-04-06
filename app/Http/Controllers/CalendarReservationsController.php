@@ -32,6 +32,7 @@ class CalendarReservationsController extends Controller
             'select_month' => 'integer|required',
             'select_day' => 'integer|required',
             'select_hour' => 'integer|required',
+            'tipo' => 'string|required',
         ]);
 
         $reservation = new CalendarReservations([
@@ -41,6 +42,7 @@ class CalendarReservationsController extends Controller
             "select_month" => $request->input('select_month'),
             "select_day" => $request->input('select_day'),
             "select_hour" => $request->input('select_hour'),
+            "tipo" => $request->input('tipo'),
         ]);
 
         $reservation->save();
