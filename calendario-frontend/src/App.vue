@@ -43,8 +43,8 @@
                       </div>
 
                       <div class="card-actions justify-end pt-6">
-                          <button v-if="lab_name.length > 1 && lab_description.length > 1" class="btn">Aceptar</button>
-                          <button v-else disabled @click="reservedLab" class="btn">Aceptar</button>
+                          <button v-if="lab_name.length <= 1 && lab_description.length <= 1" disabled class="btn">Aceptar</button>
+                          <button v-else @click="reservedLab" class="btn">Aceptar</button>
                           <button @click="create_lab_popup=false" class="btn">Cancelar</button>
                       </div>
                   </div>
@@ -82,8 +82,8 @@
                       </div>
 
                       <div class="card-actions justify-end pt-6">
-                          <button v-if="instructor_name.length > 1 && instructor_contact.length > 1" class="btn">Aceptar</button>
-                          <button v-else disabled @click="reservedInstructor" class="btn">Aceptar</button>
+                          <button v-if="instructor_name.length <= 1 && instructor_contact.length <= 1" disabled class="btn">Aceptar</button>
+                          <button v-else @click="reservedInstructor" class="btn">Aceptar</button>
                           <button @click="create_instructor_popup=false" class="btn">Cancelar</button>
                       </div>
                   </div>

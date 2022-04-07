@@ -114,6 +114,7 @@ export default class Calendario extends Vue {
         this.current_date = (this.current_week * 7) + (new Date().getDate() % 7)
     }
 
+    // TODO: Corregir los dias al llegar al dia primero
     createDateID(index: number, time: number) {
         let incrementForChangeMonth = 0
         if (this.days_week[index - 1] > this.days_week[index]) incrementForChangeMonth = 1
