@@ -22,85 +22,68 @@
           </template>
       </Header>
 
-      <div v-if="create_lab_popup" class="alert_popup w-full h-full flex">
-          <div class="m-auto">
-              <div class="card bg-base-100 m-2">
-                  <div class="card-body">
-                      <h2 class="card-title">Agregar Laboratorio</h2>
-
-                      <div class="form-control mt-5">
-                          <label class="label cursor-pointer">
-                              <span class="label-text">Nombre: </span>
-                              <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_name">
-                          </label>
-                      </div>
-
-                      <div class="form-control mt-5">
-                          <label class="label cursor-pointer">
-                              <span class="label-text">Description: </span>
-                              <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_description">
-                          </label>
-                      </div>
-
-                      <div class="card-actions justify-end pt-6">
-                          <button v-if="lab_name.length <= 1 && lab_description.length <= 1" disabled class="btn">Aceptar</button>
-                          <button v-else @click="reservedLab" class="btn">Aceptar</button>
-                          <button @click="create_lab_popup=false" class="btn">Cancelar</button>
-                      </div>
-                  </div>
+      <card-modal :toggle="create_lab_popup">
+          <template v-slot:title>Agregar Laboratorio</template>
+          <template v-slot:actions>
+              <button v-if="lab_name.length <= 1 || lab_description.length <= 1" disabled class="btn">Aceptar</button>
+              <button v-else @click="reservedLab" class="btn">Aceptar</button>
+              <button @click="create_lab_popup=false" class="btn">Cancelar</button>
+          </template>
+          <template v-slot:body>
+              <div class="form-control mt-5">
+                  <label class="label cursor-pointer">
+                      <span class="label-text">Nombre: </span>
+                      <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_name">
+                  </label>
               </div>
-          </div>
-      </div>
-
-      <div v-if="create_lab_message.length > 0" class="alert_popup w-full h-full flex">
-          <div  class="m-auto">
-              <div class="card bg-base-100 m-2 p-8">
-                  <h2 class="px-10 w-80 font-black uppercase text-center">Creando laboratorio</h2>
-                  <p class="text-center">{{create_lab_message}}</p>
+              <div class="form-control mt-5">
+                  <label class="label cursor-pointer">
+                      <span class="label-text">Description: </span>
+                      <input class="input input-bordered ml-3 w-md" type="text" v-model="lab_description">
+                  </label>
               </div>
-          </div>
-      </div>
+          </template>
+      </card-modal>
 
-      <div v-if="create_instructor_popup" class="alert_popup w-full h-full flex">
-          <div class="m-auto">
-              <div class="card bg-base-100 m-2">
-                  <div class="card-body">
-                      <h2 class="card-title">Agregar Instructor</h2>
-
-                      <div class="form-control mt-5">
-                          <label class="label cursor-pointer">
-                              <span class="label-text">Nombre: </span>
-                              <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_name">
-                          </label>
-                      </div>
-
-                      <div class="form-control mt-5">
-                          <label class="label cursor-pointer">
-                              <span class="label-text">Contacto: </span>
-                              <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_contact">
-                          </label>
-                      </div>
-
-                      <div class="card-actions justify-end pt-6">
-                          <button v-if="instructor_name.length <= 1 && instructor_contact.length <= 1" disabled class="btn">Aceptar</button>
-                          <button v-else @click="reservedInstructor" class="btn">Aceptar</button>
-                          <button @click="create_instructor_popup=false" class="btn">Cancelar</button>
-                      </div>
-                  </div>
+      <card-modal :toggle="create_instructor_popup">
+          <template v-slot:title>Agregar Instructor</template>
+          <template v-slot:actions>
+              <button v-if="instructor_name.length <= 1 || instructor_contact.length <= 1" disabled class="btn">Aceptar</button>
+              <button v-else @click="reservedInstructor" class="btn">Aceptar</button>
+              <button @click="create_instructor_popup=false" class="btn">Cancelar</button>
+          </template>
+          <template v-slot:body>
+              <div class="form-control mt-5">
+                  <label class="label cursor-pointer">
+                      <span class="label-text">Nombre: </span>
+                      <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_name">
+                  </label>
               </div>
-          </div>
-      </div>
-
-      <div v-if="create_instructor_message.length > 0" class="alert_popup w-full h-full flex">
-          <div  class="m-auto">
-              <div class="card bg-base-100 m-2 p-8">
-                  <h2 class="px-10 w-80 font-black uppercase text-center">Creando Instructor</h2>
-                  <p class="text-center">{{create_instructor_message}}</p>
+              <div class="form-control mt-5">
+                  <label class="label cursor-pointer">
+                      <span class="label-text">Contacto: </span>
+                      <input class="input input-bordered ml-3 w-md" type="text" v-model="instructor_contact">
+                  </label>
               </div>
-          </div>
-      </div>
+          </template>
+      </card-modal>
+
+      <card-modal :toggle="create_lab_message.length > 0">
+          <template v-slot:body>
+              <h2 class="px-10 w-80 font-black uppercase text-center">Creando laboratorio</h2>
+              <p class="text-center">{{create_lab_message}}</p>
+          </template>
+      </card-modal>
+
+      <card-modal :toggle="create_instructor_message.length > 0">
+          <template v-slot:body>
+              <h2 class="px-10 w-80 font-black uppercase text-center">Creando Instructor</h2>
+              <p class="text-center">{{create_instructor_message}}</p>
+          </template>
+      </card-modal>
 
       <router-view/>
+
       <footer class="pb-10 m-auto text-center">
           <p>Copyright © 2022 - All right reserved by UABC FEyRI</p>
       </footer>
@@ -122,24 +105,6 @@
      border-radius: 5rem;
      border: 0.25rem solid rgba(0, 0, 0, 0.35);
  }
-
-.alert_popup {
-    top: 0;
-    z-index: 99999999;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(15px);
-}
-
-.alert_popup::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    background-color: rgba(0, 0, 0, 0.05);
-    width: 100%;
-    height: 100%;
-}
 </style>
 
 <script lang="ts">
@@ -147,9 +112,10 @@ import Header from "@/components/Header.vue";
 import {Component, Vue, Watch} from "vue-property-decorator";
 import Cookie from "@/services/Cookie";
 import APIServices from "@/services/api/APIServices";
+import CardModal from "@/components/CardModal.vue";
 
 @Component({
-    components: { Header }
+    components: {CardModal, Header }
 })
 export default class App extends Vue {
     lab_name = ""
@@ -200,7 +166,7 @@ export default class App extends Vue {
     }
 
     async reservedLab() {
-        this.create_lab_message = "Laboratorio" + " " + this.lab_name + " " +"creado"
+        this.create_lab_message = "Registrando laboratorio " + " " + this.lab_name
         let result = await APIServices.CreateLaboratory({
             name : this.lab_name,
             description : this.lab_description
@@ -209,8 +175,9 @@ export default class App extends Vue {
         this.create_lab_message = ""
         this.create_lab_popup = false
     }
+
     async reservedInstructor() {
-        this.create_instructor_message = "Instructor" + " " + this.instructor_name + " " +"creado"
+        this.create_instructor_message = "Registrando instructor" + " " + this.instructor_name
         let result = await APIServices.CreateIInstructor({
             name : this.instructor_name,
             contact : this.instructor_contact
