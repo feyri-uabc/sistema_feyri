@@ -1,7 +1,7 @@
 <template>
   <div class="home">
       <div class="mx-2 sm:mx-10 mb-20">
-          <Calendario :update-calendar.sync="updateCalendar" start_time="6" end_time="18">
+          <Calendario :update-calendar.sync="updateCalendar" start_time="6" end_time="10">
               <template v-slot:subtitle>
                   <div class="grid w-full justify-center">
                       <h2 class="text-xl font-bold text-center" v-if="$store.state.current_lab">
@@ -23,26 +23,34 @@
       <card-modal :toggle="show_alert_popup">
           <template v-slot:title>Reservacion de laboratorio</template>
           <template v-slot:actions>
-              <button v-if="current_instructor" @click="reserved" class="btn">Aceptar</button>
+              <button v-if="current_instructor && current_reservation_type" @click="reserved" class="btn">Aceptar</button>
               <button v-else class="btn btn-disabled" tabindex="-1" role="button">Aceptar</button>
               <button @click="show_alert_popup=false" class="btn">Cancelar</button>
           </template>
           <template v-slot:body>
-              <select @change="updateCurrentLabInput" class="select select-bordered w-full mt-4">
-                  <option disabled selected>Seleccionar Instructor</option>
-                  <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
-              </select>
-
-              <hr class="mx-4 my-4 opacity-50"/>
-              <p class="font-bold opacity-50 text-xs text-center uppercase">Selecciona el tipo de reservacion</p>
-              <div class="form-control" v-for="(reservation, index) in reservation_types">
-                  <label class="label cursor-pointer">
-                      <span class="label-text">{{reservation.value}}</span>
-                      <input @click="setReservationType(reservation.value.toLowerCase())" type="radio" name="radio-6" class="radio radio-primary" :checked="index===0">
+              <div class="form-control w-full max-w-xs">
+                  <label v-if="current_instructor" class="label">
+                      <span class="label-text">*Seleccionar Instructor</span>
                   </label>
+                  <select @change="updateCurrentLabInput" class="select select-bordered w-full">
+                      <option disabled selected>*Seleccionar Instructor</option>
+                      <option :value="instructor.id" v-for="instructor of $store.state.instructors">{{ instructor.name }}</option>
+                  </select>
               </div>
 
-              <hr class="mx-4 my-4 opacity-50"/>
+              <hr class="mx-4 my-1 opacity-50"/>
+
+              <div class="form-control w-full max-w-xs">
+                  <label v-if="current_reservation_type" class="label">
+                      <span class="label-text">*Tipo de reservacion</span>
+                  </label>
+                  <select @change="updateCurrentTypeInput" class="select select-bordered w-full max-w-xs">
+                      <option disabled selected>*Tipo de reservacion:</option>
+                      <option v-for="(reservation, index) in reservation_types">{{reservation.value}}</option>
+                  </select>
+              </div>
+
+              <hr class="mx-4 my-1 opacity-50"/>
               <div class="form-control">
                   <label class="label cursor-pointer">
                       <span class="label-text">Reservacion unica</span>
@@ -151,11 +159,13 @@ export default class Home extends Vue {
         {value: "Otros", color: "bg-gray-400"}
     ]
 
+    current_instructor: any = null
+    current_reservation_type: any = null
+
     updateCalendar = false
     show_alert_popup = false
     current_data = []
     before_current_lab: any = null
-    current_instructor: any = null
     reservation_unique = true
     reservation_weeks = 1
     message_reservation = ""
@@ -190,10 +200,6 @@ export default class Home extends Vue {
         }
     }
 
-    setReservationType(type: string) {
-        this.reservation_type = type
-    }
-
     createBoxCalendar(instructor_id: number, _type: string): string {
         let instructor = this.$store.state.instructors.filter((item: any) => item.id == instructor_id)
         if (instructor.length < 1) return ""
@@ -209,6 +215,10 @@ export default class Home extends Vue {
         this.current_instructor = e.target.value
     }
 
+    updateCurrentTypeInput(e: any) {
+        this.current_reservation_type = (e.target.value + "").trim().toLowerCase()
+    }
+
     @Watch("show_alert_popup")
     updateAlertPopUp() {
         let body: any = document.querySelector('body')
@@ -216,13 +226,12 @@ export default class Home extends Vue {
             body.style.overflow = "hidden"
             return
         }
+        this.current_instructor = this.current_data_element = this.current_reservation_type = null
         this.current_data = []
-        this.current_instructor = this.current_data_element = null
         this.reservation_weeks = 1
         this.reservation_unique = true
         this.days_select_week = [false, false, false, false, false]
         body.style.overflow = "auto"
-        this.reservation_type = "clase"
     }
 
     @Watch("updateCalendar")
@@ -284,7 +293,7 @@ export default class Home extends Vue {
                         select_month: month,
                         select_day: day,
                         select_hour: date[4],
-                        tipo: this.reservation_type
+                        tipo: this.current_reservation_type
                     })
 
                     if (result) this.$store.state.reservations.push(result)
@@ -294,7 +303,6 @@ export default class Home extends Vue {
             this.message_reservation = ""
         }
         this.show_alert_popup = false
-        this.reservation_type = "clase"
         this.updateInfoCalendar()
     }
 
