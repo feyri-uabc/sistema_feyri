@@ -1,19 +1,29 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import APIServices from "@/services/api/APIServices";
-import ILaboratories from "@/services/api/interfaces/ILaboratories";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        alert: {
+            show: false,
+            type: "success", // success, warning, error
+            message: ""
+        },
+        //
         token_exist: false,
         //
         laboratories: null,
         instructors: null,
         reservations: null,
         //
-        current_lab: null
+        current_lab: null,
+        //
+        calendar_time_hrs: {
+            start: 8,
+            end: 12
+        }
     },
     getters: {
         stateIsEmpty(state: any) {

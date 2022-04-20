@@ -53,7 +53,7 @@ export default class APIServices {
     }
 
     public static async DeleteInstructor(id: number): Promise<string | null> {
-        return this.Delete<IInstructors>("IInstructors/" + id)
+        return this.Delete<IInstructors>("instructors/" + id)
     }
 
     public static async CreateIInstructor(instructor: IInstructors): Promise<IInstructors | null> {

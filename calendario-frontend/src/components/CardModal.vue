@@ -1,15 +1,15 @@
 <template>
-    <div class="w-full h-full modal-popup" v-if="toggle">
+    <div v-if="toggle" class="w-full h-full modal-popup">
         <div class="overflow-y-auto h-full flex">
-            <div class="card card-contain my-auto bg-base-100">
-                <h2 class="card-title m-4">
-                    <slot name="title"/>
+            <div class="border border-current card card-contain my-auto bg-base-100">
+                <h2 class="card-title">
+                    <slot class="m-4" name="title"/>
                 </h2>
                 <div class="card-body card-body-reset">
                     <slot name="body"/>
                 </div>
-                <div class="card-actions justify-end pt-6">
-                    <slot name="actions"/>
+                <div class="card-actions justify-end">
+                    <slot class="pt-6" name="actions"/>
                 </div>
             </div>
         </div>
@@ -45,6 +45,7 @@
 
 .card-contain {
     min-width: 15rem;
+    width: 30rem;
     min-height: 8rem;
     padding: 2rem;
 }
@@ -56,5 +57,14 @@ import {Component, Prop, Vue} from "vue-property-decorator";
 @Component({})
 export default class Calendario extends Vue {
     @Prop({required: true}) toggle!: boolean
+
+    mounted() {
+        window.onkeyup = (e: any) => this.closeModal(e.keyCode)
+    }
+
+    closeModal(keyCode: number) {
+        if (keyCode != 27) return
+        this.$emit("escape")
+    }
 }
 </script>

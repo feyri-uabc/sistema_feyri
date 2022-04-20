@@ -45,7 +45,7 @@
 
 .days .box {
     transition: 200ms;
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(0, 0, 0, 0.08);
     overflow: hidden;
     min-width: 14rem;
     user-select: none;
@@ -56,7 +56,7 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.08);
     box-shadow: 2px 2px 20px 5px rgba(0, 0, 0, 0.08);
 }
 
