@@ -39,11 +39,11 @@ export default class Create extends Vue {
     }
 
     async save() {
-        let instructor: ILaboratories = {
+        let laboratory: ILaboratories = {
             name: this.current_name,
             description: this.current_description
         }
-        await APIServices.CreateLaboratory(instructor).then((result: ILaboratories | null) => {
+        await APIServices.CreateLaboratory(laboratory).then((result: ILaboratories | null) => {
             if (result == null) return this.$store.state.alert = { type: "error",  show: true,  message: "Error al registrar el lab: " + this.current_name }
             this.$store.state.alert = { type: "success",  show: true,  message: "Nuevo laboratorio: " + this.current_name }
             this.$store.state.laboratories.push(result)

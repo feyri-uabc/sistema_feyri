@@ -1,19 +1,13 @@
-# calendario-frontend
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Tareas restantes
+- [ ] Agregar campo de grupo, materia_id, grupo_id en Reservacion
+- [ ] Crear Reservacion por grupo (usar steps de daisyui en caso de no ser unica)
+  - [ ] Seleccion de dias
+  - [ ] Seleccion de horas
+- [ ] Eliminar Reservacion por grupo
+- [ ] Agregar tabla para Materias
+- [ ] Agregar tabla para Grupos
+- [ ] CRUD Materias
+- [ ] CRUD Grupos
+- [ ] Menu desplegable (breakpoints)
+---
+- [ ] Cambinar horarios consecutivos en calendario

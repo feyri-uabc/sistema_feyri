@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import APIServices from "@/services/api/APIServices";
+import ILaboratories from "@/services/api/interfaces/ILaboratories";
 
 Vue.use(Vuex)
 
@@ -22,7 +23,7 @@ export default new Vuex.Store({
         //
         calendar_time_hrs: {
             start: 8,
-            end: 12
+            end: 13
         }
     },
     getters: {

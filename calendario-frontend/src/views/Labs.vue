@@ -20,11 +20,11 @@
                         <td>{{ laboratory.name }}</td>
                         <td>{{ laboratory.description }}</td>
                         <td class="justify-center flex print:hidden">
-                            <button class="btn mx-2 btn-ghost hover:text-violet-500 btn-xs"
-                                    @click="edit(laboratory)">Editar
+                            <button class="btn mx-2 btn-ghost hover:text-violet-500 btn-xs" @click="edit(laboratory)">
+                                Editar
                             </button>
-                            <button class="btn mx-2 btn-ghost hover:text-red-400 btn-xs"
-                                    @click="remove(laboratory)">Eliminar
+                            <button class="btn mx-2 btn-ghost hover:text-red-400 btn-xs" @click="remove(laboratory)">
+                                Eliminar
                             </button>
                         </td>
                     </tr>
@@ -73,14 +73,14 @@ export default class Labs extends Vue {
         this.current_lab = null
     }
 
-    edit(instructor: ILaboratories) {
+    edit(laboratory: ILaboratories) {
         this.openModal("edit")
-        this.current_lab = instructor
+        this.current_lab = laboratory
     }
 
-    remove(instructor: ILaboratories) {
+    remove(laboratory: ILaboratories) {
         this.openModal("remove")
-        this.current_lab = instructor
+        this.current_lab = laboratory
     }
 }
 </script>

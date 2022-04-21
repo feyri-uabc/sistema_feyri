@@ -4,10 +4,10 @@
 
         <Header>
           <template v-slot:right v-if="route_is_home && $store.state.laboratories != null && !!$store.state.laboratories[0]">
-              <hr class="y-line mr-6 hidden sm:inline-block">
+              <hr class="y-line mr-6 hidden lg:inline-block">
               <div class="flex items-center justify-center">
-                  <div class="dropdown dropdown-end mr-5">
-                      <label tabindex="0" class="btn btn-sm px-5">LABORATORIO {{$store.state.current_lab}}</label>
+                  <div class="dropdown dropdown-end">
+                      <label tabindex="0" class="btn btn-sm px-3">LABORATORIOS</label>
                       <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                           <li v-for="lab of $store.state.laboratories"><a @click="select_lab(lab.id)">Lab {{lab.name}}</a></li>
                       </ul>
@@ -53,9 +53,10 @@ import Header from "@/components/Header.vue";
 import Cookie from "@/services/Cookie";
 import {Route} from "vue-router";
 import Alert from "@/components/Alert.vue";
+import ILaboratories from "@/services/api/interfaces/ILaboratories";
 
 @Component({
-    components: {Alert, Header }
+    components: { Alert, Header }
 })
 export default class App extends Vue {
     route_is_home: boolean = true
@@ -70,9 +71,10 @@ export default class App extends Vue {
         this.route_is_home = value.name?.toLowerCase() === "home"
     }
 
-
     select_lab(id: any) {
-        this.$store.state.current_lab = id
+        let laboratories: Array<ILaboratories> = this.$store.state.laboratories
+        if (!laboratories) return
+        this.$store.state.current_lab = laboratories.filter((item: ILaboratories) => item.id == id)[0]
     }
 }
 </script>

@@ -43,7 +43,7 @@ export default class Edit extends Vue {
         this.change_is_valid = !(this.laboratory.name == this.current_name && this.laboratory.description == this.current_description);
     }
 
-    async save() {
+    save() {
         this.$store.state.alert = { type: "success",  show: true,  message: "Laboratorio editado: " + this.current_name }
         this.close()
     }

@@ -1,11 +1,11 @@
 <template>
-  <div class="section-home">
+  <section class="section-home">
       <div class="mx-2 sm:mx-10 mb-20">
-          <Calendario :update-calendar.sync="updateCalendar" :start_time="$store.state.calendar_time_hrs.start" :end_time="$store.state.calendar_time_hrs.end">
+          <Calendar :update-calendar.sync="updateCurrentLab" :start_time="$store.state.calendar_time_hrs.start" :end_time="$store.state.calendar_time_hrs.end">
               <template v-slot:subtitle>
                   <div class="grid w-full justify-center">
                       <h2 class="text-xl font-bold text-center" v-if="$store.state.current_lab">
-                          {{("Laboratorio " + $store.state.laboratories.filter(item => item.id === $store.state.current_lab)[0].name).toUpperCase()}}
+                          {{("Laboratorio " + $store.state.current_lab.name).toUpperCase()}}
                       </h2>
                       <div class="w-full overflow-hidden">
                           <div class="tags-colors">
@@ -17,9 +17,16 @@
                       </div>
                   </div>
               </template>
-          </Calendario>
+          </Calendar>
       </div>
-  </div>
+
+      <CardModal :toggle="open_modal" v-on:escape="closeModal">
+          <template v-slot:body>
+              <Create :item_html="current_item_box" v-if="modalType==='create'" v-on:close="closeModal"/>
+              <Remove :item_html="current_item_box" v-if="modalType==='remove'" v-on:close="closeModal"/>
+          </template>
+      </CardModal>
+  </section>
 </template>
 
 <style>
@@ -42,9 +49,14 @@
 
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import Calendario from "@/components/Calendario.vue";
+import Calendar, {GetCalendarFieldId} from "@/components/Calendar.vue";
+import CardModal from "@/components/CardModal.vue";
+import Create from "@/components/modal_body/reservation/Create.vue";
+import Remove from "@/components/modal_body/reservation/Remove.vue";
+import ILaboratories from "@/services/api/interfaces/ILaboratories";
+import IReservations from "@/services/api/interfaces/IReservations";
 
-@Component({ components: {Calendario} })
+@Component({ components: {Create, Remove, Calendar, CardModal} })
 export default class Home extends Vue {
     reservation_types: Array<{value: string, color: string}> = [
         {value: "Clase", color: "bg-blue-300"},
@@ -53,7 +65,55 @@ export default class Home extends Vue {
         {value: "Externo", color: "bg-orange-300"},
         {value: "Otros", color: "bg-gray-400"}
     ]
+    open_modal: boolean = false
+    modalType: string | null = null // create, delete
+    current_item_box: HTMLElement | null = null
 
-    updateCalendar() {}
+    get current_lab(): ILaboratories | null {
+        return this.$store.state.current_lab
+    }
+
+    openModal(type: string) {
+        this.open_modal = true
+        this.modalType = type
+    }
+
+    closeModal() {
+        this.open_modal = false
+        this.modalType = null
+    }
+
+    loadReservations() {
+        let reservations: Array<IReservations> = this.$store.state.reservations
+        reservations = reservations.filter((item: IReservations) => item.lab_id == this.$store.state.current_lab.id)
+        if (reservations && reservations.length > 0) {
+            reservations.forEach((item: IReservations) => {
+                let {id, tipo, lab_id, select_day, select_month, select_year, select_hour, instructor_id} = item
+                let element: HTMLElement | null = GetCalendarFieldId(select_year, select_month, select_day, select_hour)
+                if (element) element.innerHTML = `<div id="${id}">${tipo}</div>`
+            })
+        }
+    }
+
+    loadActionsBoxes() {
+        let boxes = document.querySelectorAll(".row-days .box")
+        boxes.forEach((item: any) => {
+            item.onclick = (e: any) => {
+                this.current_item_box = item
+                this.openModal((item.children.length < 1) ?"create" :"remove")
+            }
+        })
+    }
+
+    @Watch("current_lab", { immediate: true, deep: true })
+    updateCurrentLab() {
+        if (!this.current_lab) return
+
+        // Load Reservations
+        this.loadReservations()
+
+        // Create boxes (add events)
+        this.loadActionsBoxes()
+    }
 }
 </script>
