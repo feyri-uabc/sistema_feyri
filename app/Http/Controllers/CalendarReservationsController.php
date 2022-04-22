@@ -28,6 +28,9 @@ class CalendarReservationsController extends Controller
         $this->validate($request, [
             'lab_id' => 'integer|required',
             'instructor_id' => 'integer|required',
+            'course_id' => 'integer|required',
+            'group_id' => 'integer|required',
+            'grouping' => 'integer|required',
             'select_year' => 'integer|required',
             'select_month' => 'integer|required',
             'select_day' => 'integer|required',
@@ -38,6 +41,9 @@ class CalendarReservationsController extends Controller
         $reservation = new CalendarReservations([
             "lab_id" => $request->input('lab_id'),
             "instructor_id" => $request->input('instructor_id'),
+            "course_id" => $request->input('course_id'),
+            "group_id" => $request->input('group_id'),
+            "grouping" => $request->input('grouping'),
             "select_year" => $request->input('select_year'),
             "select_month" => $request->input('select_month'),
             "select_day" => $request->input('select_day'),

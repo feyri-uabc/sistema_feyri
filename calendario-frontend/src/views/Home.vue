@@ -22,7 +22,7 @@
 
       <CardModal :toggle="open_modal" v-on:escape="closeModal">
           <template v-slot:body>
-              <Create :item_html="current_item_box" v-if="modalType==='create'" v-on:close="closeModal"/>
+              <Create :reservations_type="reservation_types" :item_html="current_item_box" v-if="modalType==='create'" v-on:close="closeModal"/>
               <Remove :item_html="current_item_box" v-if="modalType==='remove'" v-on:close="closeModal"/>
           </template>
       </CardModal>

@@ -2,6 +2,8 @@ import ILaboratories from "@/services/api/interfaces/ILaboratories";
 import IReservations from "@/services/api/interfaces/IReservations";
 import IInstructors from "@/services/api/interfaces/IInstructors";
 import Cookie from "@/services/Cookie";
+import IGroups from "@/services/api/interfaces/Groups";
+import ICourses from "@/services/api/interfaces/Courses";
 
 export default class APIServices {
     private static path: string = (process.env.NODE_ENV !== 'production' ?"http://localhost:8000/" :"/") + "api/calendar_"
@@ -72,5 +74,33 @@ export default class APIServices {
 
     public static async CreateReservation(reservation: IReservations): Promise<IReservations | null> {
         return this.Create<IReservations>("reservations", reservation)
+    }
+
+    // --
+
+    public static async GetAllGroups(): Promise<Array<IGroups | null>> {
+        return this.GetAll<IGroups>("groups")
+    }
+
+    public static async DeleteGroup(id: number): Promise<string | null> {
+        return this.Delete<IGroups>("groups/" + id)
+    }
+
+    public static async CreateGroup(group: IGroups): Promise<IGroups | null> {
+        return this.Create<IGroups>("groups", group)
+    }
+
+    // --
+
+    public static async GetAllCourses(): Promise<Array<ICourses | null>> {
+        return this.GetAll<ICourses>("courses")
+    }
+
+    public static async DeleteCourse(id: number): Promise<string | null> {
+        return this.Delete<ICourses>("courses/" + id)
+    }
+
+    public static async CreateCourse(course: ICourses): Promise<ICourses | null> {
+        return this.Create<ICourses>("courses", course)
     }
 }

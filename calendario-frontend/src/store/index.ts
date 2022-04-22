@@ -18,12 +18,14 @@ export default new Vuex.Store({
         laboratories: null,
         instructors: null,
         reservations: null,
+        courses: null,
+        groups: null,
         //
         current_lab: null,
         //
         calendar_time_hrs: {
             start: 8,
-            end: 13
+            end: 18
         }
     },
     getters: {
@@ -36,6 +38,8 @@ export default new Vuex.Store({
             await APIServices.GetAllLaboratories().then(result => state.laboratories = result)
             await APIServices.GetAllInstructors().then(result => state.instructors = result)
             await APIServices.GetAllReservations().then(result => state.reservations = result)
+            await APIServices.GetAllCourses().then(result => state.courses = result)
+            await APIServices.GetAllGroups().then(result => state.groups = result)
         }
     },
     actions: {},

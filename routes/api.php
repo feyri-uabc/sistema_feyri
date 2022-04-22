@@ -3,6 +3,8 @@
 use App\Http\Controllers\CalendarInstructorsController;
 use App\Http\Controllers\CalendarLabsController;
 use App\Http\Controllers\CalendarReservationsController;
+use App\Http\Controllers\CalendarCoursesController;
+use App\Http\Controllers\CalendarGroupsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +26,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('calendar_instructors', CalendarInstructorsController::class);
 Route::resource('calendar_labs', CalendarLabsController::class);
 Route::resource('calendar_reservations', CalendarReservationsController::class);
+Route::resource('calendar_courses', CalendarCoursesController::class);
+Route::resource('calendar_groups', CalendarGroupsController::class);
