@@ -23,6 +23,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import ICourses from "@/services/api/interfaces/Courses";
+import APIServices from "@/services/api/APIServices";
 
 @Component({})
 export default class Edit extends Vue {
@@ -44,7 +45,21 @@ export default class Edit extends Vue {
     }
 
     async save() {
-        this.$store.state.alert = { type: "success",  show: true,  message: "Materia editada: " + this.current_name }
+        let data: ICourses = {
+            id: this.course.id,
+            name: this.current_name,
+            description: this.current_description
+        }
+
+        await APIServices.UpdateCourses(data).then((result: string | null) => {
+            if (!result) this.$store.state.alert = { type: "error",  show: true,  message: "Error al actualizar: " + this.course.name }
+            this.$store.state.alert = { type: "success",  show: true,  message: "Se actualizo la materia: " + this.course.name }
+
+            let courses = this.$store.state.courses
+            this.$store.state.courses = courses.filter((item: ICourses) => item.id != data.id)
+            this.$store.state.courses.push(data)
+        })
+
         this.close()
     }
 }

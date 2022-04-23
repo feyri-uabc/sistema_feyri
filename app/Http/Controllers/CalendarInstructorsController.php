@@ -51,6 +51,25 @@ class CalendarInstructorsController extends Controller
     }
 
     /**
+     * Example api/{controller}/{id}
+     * Request contain vars
+     *
+     * @param Request $request
+     * @param $id
+     * @return void
+     */
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'string|required',
+            'contact' => 'required'
+        ]);
+        
+        $calendar = CalendarInstructors::find($id);
+        return $calendar->update($request->all());
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

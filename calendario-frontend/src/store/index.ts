@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import APIServices from "@/services/api/APIServices";
 import ILaboratories from "@/services/api/interfaces/ILaboratories";
+import IInstructors from "@/services/api/interfaces/IInstructors";
+import IReservations from "@/services/api/interfaces/IReservations";
+import ICourses from "@/services/api/interfaces/Courses";
+import IGroups from "@/services/api/interfaces/Groups";
 
 Vue.use(Vuex)
 
@@ -27,15 +31,14 @@ export default new Vuex.Store({
         calendar_time_hrs: {
             start: 8,
             end: 12
-        }
+        },
+        is_load: false
     },
     getters: {
         stateIsEmpty(state: any) {
             return !state.reservations && !state.instructors && !state.laboratories
-        }
-    },
-    mutations: {
-        async loadData(state) {
+        },
+        loadDate: (state: any) => async (): Promise<void> => {
             await APIServices.GetAllLaboratories().then(result => state.laboratories = result)
             await APIServices.GetAllInstructors().then(result => state.instructors = result)
             await APIServices.GetAllReservations().then(result => state.reservations = result)
@@ -43,6 +46,7 @@ export default new Vuex.Store({
             await APIServices.GetAllGroups().then(result => state.groups = result)
         }
     },
+    mutations: {},
     actions: {},
     modules: {}
 })

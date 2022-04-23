@@ -23,6 +23,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import IInstructors from "@/services/api/interfaces/IInstructors";
+import APIServices from "@/services/api/APIServices";
 
 @Component({})
 export default class Edit extends Vue {
@@ -44,7 +45,21 @@ export default class Edit extends Vue {
     }
 
     async save() {
-        this.$store.state.alert = { type: "success",  show: true,  message: "Instructor editado: " + this.current_name }
+        let data: IInstructors = {
+            id: this.instructor.id,
+            name: this.current_name,
+            contact: this.current_contact
+        }
+
+        await APIServices.UpdateInstructor(data).then((result: string | null) => {
+            if (!result) this.$store.state.alert = { type: "error",  show: true,  message: "Error al actualizar: " + this.instructor.name }
+            this.$store.state.alert = { type: "success",  show: true,  message: "Se actualizo el instructor: " + this.instructor.name }
+
+            let instructors = this.$store.state.instructors
+            this.$store.state.instructors = instructors.filter((item: IInstructors) => item.id != data.id)
+            this.$store.state.instructors.push(data)
+        })
+
         this.close()
     }
 }

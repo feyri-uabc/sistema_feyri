@@ -6,17 +6,28 @@
 - [x] Eliminar Reservacion por grupo
 - [x] Agregar tabla para Materias
 - [x] Agregar tabla para Grupos
-- [ ] CRUD Materias
+- [x] CRUD Materias
   - [x] Create
   - [x] Read
-  - [ ] Update
+  - [x] Update
   - [x] Delete
-- [ ] CRUD Grupos
+- [x] CRUD Grupos
   - [x] Create
   - [x] Read
-  - [ ] Update
+  - [x] Update
   - [x] Delete
+- [x] CRUD Instructores
+    - [x] Create
+    - [x] Read
+    - [x] Update
+    - [x] Delete
+- [x] CRUD Laboratorios
+    - [x] Create
+    - [x] Read
+    - [x] Update
+    - [x] Delete
 - [ ] Menu desplegable (breakpoints)
+- [x] Screen Loader
 ---
 ### Tareas tentativas a implementar
 - [ ] Cambinar horarios consecutivos en calendario

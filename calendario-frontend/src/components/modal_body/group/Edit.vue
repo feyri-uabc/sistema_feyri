@@ -23,6 +23,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import IGroups from "@/services/api/interfaces/Groups";
+import APIServices from "@/services/api/APIServices";
 
 @Component({})
 export default class Edit extends Vue {
@@ -44,7 +45,21 @@ export default class Edit extends Vue {
     }
 
     async save() {
-        this.$store.state.alert = { type: "success",  show: true,  message: "group editado: " + this.current_name }
+        let data: IGroups = {
+            id: this.group.id,
+            name: this.current_name,
+            description: this.current_description
+        }
+
+        await APIServices.UpdateGroups(data).then((result: string | null) => {
+            if (!result) this.$store.state.alert = { type: "error",  show: true,  message: "Error al actualizar: " + this.group.name }
+            this.$store.state.alert = { type: "success",  show: true,  message: "Se actualizo el grupo: " + this.group.name }
+
+            let groups = this.$store.state.groups
+            this.$store.state.groups = groups.filter((item: IGroups) => item.id != data.id)
+            this.$store.state.groups.push(data)
+        })
+
         this.close()
     }
 }

@@ -43,7 +43,11 @@
             </div>
         </div>
 
-        <div class="mt-2 flex justify-end">
+        <div class="mt-2 flex justify-end" v-if="removed">
+            <button disabled class="btn mr-5">Aceptar</button>
+            <button disabled class="btn">Cancelar</button>
+        </div>
+        <div class="mt-2 flex justify-end" v-else>
             <button @click="remove" class="btn mr-5">Aceptar</button>
             <button @click="close" class="btn">Cancelar</button>
         </div>
@@ -68,6 +72,7 @@ export default class Remove extends Vue {
     @Prop({ required: true}) item_html!: HTMLElement
     current_reservation!: IReservations
     unique_remove: boolean = true
+    removed: boolean = false
     get reservations_group(): Array<IReservations> {
         let grouping = this.current_reservation.grouping
         return this.$store.state.reservations.filter((item: IReservations) => item.grouping === grouping)
@@ -98,6 +103,7 @@ export default class Remove extends Vue {
             type: "error", show: true,
             message: "Error al eliminar la reservacion: " + this.current_reservation.id
         }
+        this.removed = true
         if (this.unique_remove) await this.removeId(this.current_reservation.id, this.item_html)
         else {
             for (let reservation of this.reservations_group) {

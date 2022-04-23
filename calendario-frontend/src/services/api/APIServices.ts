@@ -20,6 +20,20 @@ export default class APIServices {
             .then((result: string | null) => result)
     }
 
+    private static async Update<T>(_path: string, item: any): Promise<string | null> {
+        let queries = "?"
+        for (let key of Object.keys(item)) if(key != "id") queries += key + "=" + item[key] + "&"
+
+        let request: RequestInit = {
+            method: "PUT",
+            redirect: 'follow'
+        }
+
+        return await fetch(this.path + _path + queries, request)
+            .then(data => data.text())
+            .then((result: string | null) => result)
+    }
+
     private static async Create<T>(_path: string, item: any): Promise<T | null> {
         let formData: any = new FormData()
         for (let key of Object.keys(item)) formData.append(key, item[key])
@@ -44,6 +58,10 @@ export default class APIServices {
         return this.Delete<ILaboratories>("labs/" + id)
     }
 
+    public static async UpdateLaboratory(lab: ILaboratories): Promise<string | null> {
+        return this.Update<ILaboratories>("labs/" + lab.id, lab)
+    }
+
     public static async CreateLaboratory(lab: ILaboratories): Promise<ILaboratories | null> {
         return this.Create<ILaboratories>("labs", lab)
     }
@@ -56,6 +74,10 @@ export default class APIServices {
 
     public static async DeleteInstructor(id: number): Promise<string | null> {
         return this.Delete<IInstructors>("instructors/" + id)
+    }
+
+    public static async UpdateInstructor(instructors: IInstructors): Promise<string | null> {
+        return this.Update<IInstructors>("instructors/" + instructors.id, instructors)
     }
 
     public static async CreateIInstructor(instructor: IInstructors): Promise<IInstructors | null> {
@@ -86,6 +108,10 @@ export default class APIServices {
         return this.Delete<IGroups>("groups/" + id)
     }
 
+    public static async UpdateGroups(group: IGroups): Promise<string | null> {
+        return this.Update<IGroups>("groups/" + group.id, group)
+    }
+
     public static async CreateGroup(group: IGroups): Promise<IGroups | null> {
         return this.Create<IGroups>("groups", group)
     }
@@ -98,6 +124,10 @@ export default class APIServices {
 
     public static async DeleteCourse(id: number): Promise<string | null> {
         return this.Delete<ICourses>("courses/" + id)
+    }
+
+    public static async UpdateCourses(course: ICourses): Promise<string | null> {
+        return this.Update<ICourses>("courses/" + course.id, course)
     }
 
     public static async CreateCourse(course: ICourses): Promise<ICourses | null> {

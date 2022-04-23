@@ -23,7 +23,6 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
-import IInstructors from "@/services/api/interfaces/IInstructors";
 import APIServices from "@/services/api/APIServices";
 import ILaboratories from "@/services/api/interfaces/ILaboratories";
 
@@ -41,7 +40,7 @@ export default class Remove extends Vue {
                 if (result == null) return
                 this.$store.state.alert = { type: "error",  show: true,  message: "Se elimino al laboratorio: " + this.laboratory.name }
                 let laboratories = this.$store.state.laboratories
-                this.$store.state.laboratories = laboratories.filter((item: IInstructors) => item.id != this.laboratory.id)
+                this.$store.state.laboratories = laboratories.filter((item: ILaboratories) => item.id != this.laboratory.id)
             })
         this.close()
     }

@@ -105,7 +105,12 @@
             </p>
         </div>
 
-        <div class="mt-2 flex justify-end">
+        <div class="mt-2 flex justify-end" v-if="removed">
+            <button disabled class="btn mr-4">Guardar</button>
+            <button disabled class="btn">Cancelar</button>
+        </div>
+
+        <div class="mt-2 flex justify-end" v-else>
             <button v-if="(reservation_unique && form_is_valid) || (form_is_valid && current_step === 2)" @click="save" class="btn mr-4">Guardar</button>
             <button v-else disabled class="btn mr-4">Guardar</button>
             <button @click="close" class="btn">Cancelar</button>
@@ -177,6 +182,7 @@ export default class Create extends Vue {
     weeks_repeat: number = 1
 
     form_is_valid: boolean = false
+    removed: boolean = false
 
     index_day_hour_block: index_block | null = null
     reservation_unique: boolean = true
@@ -190,6 +196,7 @@ export default class Create extends Vue {
 
     mounted() {
         const _reservations = this.data_reservation
+        this.removed = false
 
         // Extract date from element HTML ID
         let _date: Array<string> = _reservations.day.split("/").reverse()
@@ -236,6 +243,7 @@ export default class Create extends Vue {
         this.reservation_unique = true
         this.current_step = 0
         this.form_is_valid = false
+        this.removed = false
         this.$emit("close")
     }
 
@@ -312,6 +320,8 @@ export default class Create extends Vue {
                 })
             })
         }
+
+        this.removed = true
 
         // Upload reservations and update in local
         for (let reservations of reservations_queue) {

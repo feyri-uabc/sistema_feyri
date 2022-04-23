@@ -23,6 +23,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import ILaboratories from "@/services/api/interfaces/ILaboratories";
+import APIServices from "@/services/api/APIServices";
 
 @Component({})
 export default class Edit extends Vue {
@@ -43,8 +44,22 @@ export default class Edit extends Vue {
         this.change_is_valid = !(this.laboratory.name == this.current_name && this.laboratory.description == this.current_description);
     }
 
-    save() {
-        this.$store.state.alert = { type: "success",  show: true,  message: "Laboratorio editado: " + this.current_name }
+    async save() {
+        let data: ILaboratories = {
+            id: this.laboratory.id,
+            name: this.current_name,
+            description: this.current_description
+        }
+
+        await APIServices.UpdateLaboratory(data).then((result: string | null) => {
+            if (!result) this.$store.state.alert = { type: "error",  show: true,  message: "Error al actualizar: " + this.laboratory.name }
+            this.$store.state.alert = { type: "success",  show: true,  message: "Se actualizo el laboratorio: " + this.laboratory.name }
+
+            let laboratories = this.$store.state.laboratories
+            this.$store.state.laboratories = laboratories.filter((item: ILaboratories) => item.id != data.id)
+            this.$store.state.laboratories.push(data)
+        })
+
         this.close()
     }
 }

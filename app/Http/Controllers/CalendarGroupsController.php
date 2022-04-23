@@ -40,6 +40,25 @@ class CalendarGroupsController extends Controller
     }
 
     /**
+     * Example api/{controller}/{id}
+     * Request contain vars
+     *
+     * @param Request $request
+     * @param $id
+     * @return void
+     */
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name' => 'string|required',
+            'description' => 'required'
+        ]);
+
+        $group = CalendarGroups::find($id);
+        return $group->update($request->all());
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

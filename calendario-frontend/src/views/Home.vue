@@ -55,9 +55,9 @@ import Create from "@/components/modal_body/reservation/Create.vue";
 import Remove from "@/components/modal_body/reservation/Remove.vue";
 import ILaboratories from "@/services/api/interfaces/ILaboratories";
 import IReservations from "@/services/api/interfaces/IReservations";
-import IGroups from "@/services/api/interfaces/Groups";
-import ICourses from "@/services/api/interfaces/Courses";
 import IInstructors from "@/services/api/interfaces/IInstructors";
+import ICourses from "@/services/api/interfaces/Courses";
+import IGroups from "@/services/api/interfaces/Groups";
 
 @Component({ components: {Create, Remove, Calendar, CardModal} })
 export default class Home extends Vue {
@@ -71,14 +71,6 @@ export default class Home extends Vue {
     open_modal: boolean = false
     modalType: string | null = null // create, delete
     current_item_box: HTMLElement | null = null
-
-    // TODO: Repair consult in store (sometimes return name error | created reservation)
-    async findState(state: string, id: number): Promise<string> {
-        if (state == 'group') return this.$store.state.groups.filter((item: IGroups) => item.id === id)[0].name
-        else if (state == 'course') return this.$store.state.courses.filter((item: ICourses) => item.id === id)[0].name
-        else if (state == 'instructor') return this.$store.state.instructors.filter((item: IInstructors) => item.id === id)[0].name
-        return ""
-    }
 
     get current_lab(): ILaboratories | null {
         return this.$store.state.current_lab
@@ -110,17 +102,31 @@ export default class Home extends Vue {
         let reservations: Array<IReservations> | null = this.current_reservations
         reservations = reservations.filter((item: IReservations) => item.lab_id == this.$store.state.current_lab.id)
         if (reservations && reservations.length > 0) {
+            let instructor_ = this.$store.state.instructors
+            let courses_ = this.$store.state.courses
+            let groups_ = this.$store.state.groups
+
             for (const item of reservations) {
                 let {id, instructor_id, course_id, group_id ,tipo, select_day, select_month, select_year, select_hour} = item
                 let element: HTMLElement | null = GetCalendarFieldId(select_year, select_month, select_day, select_hour)
 
-                if (element) element.innerHTML = `
+                let instructor: IInstructors[] = instructor_.filter((item: any) => item.id = instructor_id)
+                let course: ICourses[] = courses_.filter((item: any) => item.id = course_id)
+                let group: IGroups[] = groups_.filter((item: any) => item.id = group_id)
+
+                if (element) {
+                    element.onclick = (e: any) => {
+                        this.current_item_box = element
+                        this.openModal("remove")
+                    }
+                    element.innerHTML = `
                         <div class="w-full p-2 h-full text-gray-900 ${this.reservation_type_data(tipo).color}" id="${id}">
-                            <span>${ await this.findState('group', group_id) }</span>
-                            <span>${ await this.findState('course', course_id) }</span>
-                            <span>${ await this.findState('instructor', instructor_id) }</span>
+                            <span>${ instructor[0].name }</span>
+                            <span>${ course[0].name }</span>
+                            <span>${ group[0].name }</span>
                         </div>
                     `.trim()
+                }
 
             }
         }
@@ -132,7 +138,7 @@ export default class Home extends Vue {
             item.innerHTML = ""
             item.onclick = (e: any) => {
                 this.current_item_box = item
-                this.openModal((item.children.length < 1) ?"create" :"remove")
+                this.openModal("create")
             }
         })
     }
@@ -140,10 +146,8 @@ export default class Home extends Vue {
     @Watch("current_lab", { immediate: true, deep: true })
     updateCalendar() {
         this.clearBoxes()
-        setTimeout(() => {
-            if (!this.current_lab) return
-            this.loadReservations()
-        }, 500)
+        if (!this.current_lab) return
+        setTimeout(() => this.loadReservations(), 100)
     }
 }
 </script>
