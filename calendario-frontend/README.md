@@ -1,13 +1,22 @@
 ### Tareas restantes
-- [ ] Agregar campo de grupo, materia_id, grupo_id en Reservacion
-- [ ] Crear Reservacion por grupo (usar steps de daisyui en caso de no ser unica)
-  - [ ] Seleccion de dias
-  - [ ] Seleccion de horas
-- [ ] Eliminar Reservacion por grupo
-- [ ] Agregar tabla para Materias
-- [ ] Agregar tabla para Grupos
+- [x] Agregar campo de grupo, materia_id, grupo_id en Reservacion
+- [x] Crear Reservacion por grupo (usar steps de daisyui en caso de no ser unica)
+  - [x] Seleccion de dias
+  - [x] Seleccion de horas
+- [x] Eliminar Reservacion por grupo
+- [x] Agregar tabla para Materias
+- [x] Agregar tabla para Grupos
 - [ ] CRUD Materias
+  - [x] Create
+  - [x] Read
+  - [ ] Update
+  - [x] Delete
 - [ ] CRUD Grupos
+  - [x] Create
+  - [x] Read
+  - [ ] Update
+  - [x] Delete
 - [ ] Menu desplegable (breakpoints)
 ---
+### Tareas tentativas a implementar
 - [ ] Cambinar horarios consecutivos en calendario

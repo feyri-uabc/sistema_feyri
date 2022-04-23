@@ -15,7 +15,7 @@
 
 <style>
 .alert-message {
-    z-index: 99999999;
+    z-index: 999999999;
 }
 .fade-enter-active, .fade-leave-active {
     transition: .3s;
@@ -36,7 +36,7 @@ export default class Alert extends Vue {
         setTimeout(() => {
             this.show_alert = false
             this.$store.state.alert.show = false
-        }, 3500)
+        }, this.$store.state.alert.time ?this.$store.state.alert.time :3500)
     }
 }
 </script>

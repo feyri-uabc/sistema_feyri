@@ -10,7 +10,8 @@ export default new Vuex.Store({
         alert: {
             show: false,
             type: "success", // success, warning, error
-            message: ""
+            message: "",
+            time: null
         },
         //
         token_exist: false,
@@ -25,7 +26,7 @@ export default new Vuex.Store({
         //
         calendar_time_hrs: {
             start: 8,
-            end: 18
+            end: 12
         }
     },
     getters: {

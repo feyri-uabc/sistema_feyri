@@ -30,9 +30,16 @@
             </label>
         </div>
 
-        <div v-if="!unique_remove">
-            <div v-for="reservation in reservations_group">
-                {{reservation.id}}
+        <div class="reservations-remove my-8" v-if="!unique_remove">
+            <div class="grid grid-cols-3">
+                <span class="text-center uppercase font-bold">ID</span>
+                <span class="text-center uppercase font-bold">Fecha</span>
+                <span class="text-center uppercase font-bold">Hora</span>
+            </div>
+            <div class="grid grid-cols-3" v-for="reservation in reservations_group">
+                <span class="text-center">{{reservation.id}}</span>
+                <span class="text-center">{{f2d(reservation.select_day)}}/{{f2d(reservation.select_month)}}/{{reservation.select_year}}</span>
+                <span class="text-center">{{f2d(reservation.select_hour)}}:00</span>
             </div>
         </div>
 
@@ -43,18 +50,27 @@
     </div>
 </template>
 
+<style>
+.reservations-remove {
+    overflow-y: auto;
+    max-height: 6rem;
+}
+</style>
+
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import IReservations from "@/services/api/interfaces/IReservations";
 import APIServices from "@/services/api/APIServices";
+import {GetCalendarFieldId} from "@/components/Calendar.vue";
 
 @Component({})
 export default class Remove extends Vue {
     @Prop({ required: true}) item_html!: HTMLElement
     current_reservation!: IReservations
     unique_remove: boolean = true
-    get reservations_group() {
-        return this.$store.state.reservations.filter((item: IReservations) => item.id)
+    get reservations_group(): Array<IReservations> {
+        let grouping = this.current_reservation.grouping
+        return this.$store.state.reservations.filter((item: IReservations) => item.grouping === grouping)
     }
     get reservation_date() {
         return this.item_html.id.slice(1)
@@ -69,40 +85,38 @@ export default class Remove extends Vue {
         let reservation_id: number = parseInt(`${this.item_html.children[0].id}`)
         this.current_reservation = this.$store.state.reservations.filter((item: IReservations) => item.id == reservation_id)[0]
     }
+    /**
+     * Create 24Hours format (input: 5, output: 05:00)
+     * @param num Range 1 - 24
+     */
+    f2d(num: number): string {
+        return (num > 9) ?num+"" :"0"+num
+    }
 
     async remove() {
         if (!this.current_reservation.id) return this.$store.state.alert = {
             type: "error", show: true,
             message: "Error al eliminar la reservacion: " + this.current_reservation.id
         }
-
-        if (this.unique_remove) await this.removeId(this.current_reservation.id)
-    }
-
-    async removeId(id: number): Promise<void> {
-        await APIServices.DeleteReservation(id).then((result: string | null) => {
-            if (!result) {
-                this.$store.state.alert = { type: "error",  show: true,  message: "Error al eliminar la reservacion: " + id }
-                this.close()
+        if (this.unique_remove) await this.removeId(this.current_reservation.id, this.item_html)
+        else {
+            for (let reservation of this.reservations_group) {
+                let item = GetCalendarFieldId(reservation.select_year, reservation.select_month, reservation.select_day, reservation.select_hour)
+                if (item) if (reservation && reservation.id) await this.removeId(reservation.id, item)
             }
-            this.item_html.innerHTML = ""
-            this.$store.state.reservations = this.$store.state.reservations.filter((item: IReservations) => item.id != id)
-            this.$store.state.alert = { type: "error",  show: true,  message: "Reservacion eliminada: " + id }
-        })
+        }
         this.close()
     }
 
-    async removeGroupId(id: number) {
+    async removeId(id: number, item: HTMLElement): Promise<void> {
         await APIServices.DeleteReservation(id).then((result: string | null) => {
             if (!result) {
-                this.$store.state.alert = { type: "error",  show: true,  message: "Error al eliminar la reservacion: " + id }
-                this.close()
+                return this.$store.state.alert = { type: "error",  show: true,  message: "Error al eliminar la reservacion: " + id }
             }
-            this.item_html.innerHTML = ""
-            this.$store.state.reservations = this.$store.state.reservations.filter((item: IReservations) => item.id != id)
+            this.$store.state.reservations = this.$store.state.reservations.filter((item: IReservations) => item.id !== id)
+            item.innerHTML = ""
             this.$store.state.alert = { type: "error",  show: true,  message: "Reservacion eliminada: " + id }
         })
-        this.close()
     }
 
     close() {

@@ -1,7 +1,7 @@
 <template>
     <section class="section-labs">
         <div class="mx-2 sm:mx-10 mb-20">
-            <h1 class="text-center mt-2 mb-10 uppercase font-black text-2xl">Listado de cursos</h1>
+            <h1 class="text-center mt-2 mb-10 uppercase font-black text-2xl">Listado de materias</h1>
 
             <div class="overflow-x-auto">
                 <h1 v-if="!$store.state.courses[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
@@ -15,7 +15,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="course in $store.state.courses">
+                    <tr v-for="course in courses">
                         <th>{{ course.id }}</th>
                         <td>{{ course.name }}</td>
                         <td>{{ course.description }}</td>
@@ -39,7 +39,8 @@
         <CardModal :toggle="open_modal" v-on:escape="closeModal">
             <template v-slot:body>
                 <Create v-if="modalType==='create'" v-on:close="closeModal"/>
-                <Remove v-if="modalType==='remove'" :laboratory="current_course" v-on:close="closeModal"/>
+                <Edit v-if="modalType==='edit'" :course="current_course" v-on:close="closeModal"/>
+                <Remove v-if="modalType==='remove'" :course="current_course" v-on:close="closeModal"/>
             </template>
         </CardModal>
     </section>
@@ -51,14 +52,19 @@ import ICourses from "@/services/api/interfaces/Courses";
 import CardModal from "@/components/CardModal.vue";
 import Create from "@/components/modal_body/course/Create.vue";
 import Remove from "@/components/modal_body/course/Remove.vue";
+import Edit from "@/components/modal_body/course/Edit.vue";
 
 @Component({
-    components: {CardModal, Create, Remove}
+    components: {CardModal, Create, Remove, Edit}
 })
 export default class Courses extends Vue {
     current_course: ICourses | null = null
     open_modal: boolean = false
     modalType: string | null = null // edit, remove
+
+    get courses() {
+        return this.$store.state.courses
+    }
 
     openModal(type: string) {
         this.open_modal = true

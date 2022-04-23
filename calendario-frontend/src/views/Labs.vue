@@ -15,7 +15,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="laboratory in $store.state.laboratories">
+                    <tr v-for="laboratory in labs">
                         <th>{{ laboratory.id }}</th>
                         <td>{{ laboratory.name }}</td>
                         <td>{{ laboratory.description }}</td>
@@ -61,6 +61,10 @@ export default class Labs extends Vue {
     current_lab: ILaboratories | null = null
     open_modal: boolean = false
     modalType: string | null = null // edit, remove
+
+    get labs() {
+        return this.$store.state.laboratories
+    }
 
     openModal(type: string) {
         this.open_modal = true

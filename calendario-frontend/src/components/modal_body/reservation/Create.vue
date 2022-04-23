@@ -6,31 +6,35 @@
         </h3>
 
         <ul v-if="!reservation_unique" class="steps w-full">
-            <li v-for="(step, index) in ['Datos', 'Dias', 'Horas']"
+            <li v-for="(step, index) in options_step"
                 @click="(index < current_step || index-1 <= current_step) ?current_step = index :null"
                 :class="'step' + (index <= current_step ?' step-primary ':'')">
                 {{step}}
             </li>
         </ul>
 
-        <div v-if="current_step === 0" class="list_modal pt-4">
+        <div v-if="current_step === 0" class="list_modal_data pt-4">
             <div class="grid grid-cols-2 gap-4">
                 <div class="form-control w-full pb-4">
                     <label class="label">
-                        <span class="label-text">Tipo de reservacion</span>
+                        <span :class="'label-text opacity-' + (reservation_data.type!=null ?'100' :'0')">
+                            Tipo de reservacion
+                        </span>
                     </label>
-                    <select class="select select-bordered">
-                        <option :value="type.id" v-for="(type, index) in reservations_type" :selected="index === 0">
+                    <select v-model="reservation_data.type" @change="changeReservationType" class="select select-bordered">
+                        <option disabled selected :value="null">Tipo de reservacion</option>
+                        <option :value="type.value" v-for="type in reservations_type">
                             {{type.value}}
                         </option>
                     </select>
                 </div>
                 <div class="form-control w-full pb-4">
                     <label class="label">
-                        <span class="label-text">Selecciona el grupo</span>
+                        <span :class="'label-text opacity-' + (reservation_data.group!=null ?'100' :'0')">Selecciona el grupo</span>
                     </label>
-                    <select class="select select-bordered">
-                        <option :value="group.id" v-for="(group, index) in $store.state.groups" :selected="index === 0">
+                    <select v-model="reservation_data.group" @change="changeReservationGroup" class="select select-bordered">
+                        <option disabled selected :value="null">Selecciona el grupo</option>
+                        <option :value="group.id" v-for="group in $store.state.groups">
                             {{group.name}}
                         </option>
                     </select>
@@ -39,10 +43,11 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                    <span class="label-text">Selecciona la materia</span>
+                    <span :class="'label-text opacity-' + (reservation_data.course!=null ?'100' :'0')">Selecciona la materia</span>
                 </label>
-                <select class="select select-bordered">
-                    <option :value="course.id" v-for="(course, index) in $store.state.courses" :selected="index === 0">
+                <select v-model="reservation_data.course" @change="changeReservationCourse" class="select select-bordered">
+                    <option disabled selected :value="null">Selecciona la materia</option>
+                    <option :value="course.id" v-for="course in $store.state.courses">
                         {{course.name}}
                     </option>
                 </select>
@@ -50,10 +55,11 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                    <span class="label-text">Selecciona al docente</span>
+                    <span :class="'label-text opacity-' + (reservation_data.instructor!=null ?'100' :'0')">Selecciona al docente</span>
                 </label>
-                <select class="select select-bordered">
-                    <option :value="instructor.id" v-for="(instructor, index) in $store.state.instructors" :selected="index === 0">
+                <select v-model="reservation_data.instructor" @change="changeReservationInstructor" class="select select-bordered">
+                    <option disabled selected :value="null">Selecciona al docente</option>
+                    <option :value="instructor.id" v-for="instructor in $store.state.instructors">
                         {{instructor.name}}
                     </option>
                 </select>
@@ -67,26 +73,40 @@
             </div>
         </div>
 
-        <div v-else-if="current_step === 1" class="list_modal py-4">
-            <div v-for="day_week in current_days_week" class="form-control pb-4 mx-10">
+        <div v-else-if="current_step === 1" class="list_modal pt-4">
+            <div class="mx-10 user-select-none mb-6">
+                <h1 class="font-bold uppercase text-md text-center">Semanas a repetir <span class="border-b-2 px-2 border-current">{{weeks_repeat}}</span></h1>
+                <input v-model="weeks_repeat" type="range" min="1" max="10" value="1" class="range range-xs" step="1">
+                <div class="w-full flex justify-between text-xs px-2">
+                    <span v-for="index in 10">{{index}}</span>
+                </div>
+            </div>
+
+            <div v-for="(day_week, index) in current_days_week" class="form-control mx-10">
                 <label class="label cursor-pointer">
                     <span class="label-text text-lg font-bold uppercase">{{day_week.name}}</span>
-                    <input v-model="day_week.value" type="checkbox" checked="checked" class="checkbox checkbox-primary">
+                    <input :disabled="index === index_day_hour_block.day" v-model="day_week.value" type="checkbox" checked="checked" class="checkbox checkbox-primary">
                 </label>
             </div>
         </div>
 
-        <div v-else-if="current_step === 2" class="list_modal py-4">
-            <div v-for="hours in data_hours" class="form-control pb-4 mx-10">
+        <div v-else-if="current_step === 2" class="list_modal pt-4">
+            <div v-for="(hours, index) in data_hours" class="form-control mx-10">
                 <label class="label cursor-pointer">
                     <span class="label-text text-lg font-bold uppercase">{{hours.hourStr}}</span>
-                    <input v-model="hours.value" type="checkbox" checked="checked" class="checkbox checkbox-primary">
+                    <input :disabled="index === index_day_hour_block.hour" v-model="hours.value" type="checkbox" checked="checked" class="checkbox checkbox-primary">
                 </label>
             </div>
+        </div>
+
+        <div v-if="current_step > 0" class="step-message pt-2">
+            <p class="font-bold uppercase mx-10">
+                Si ya existe una reservacion en la hora o dia seleccionado, se sobreescribira
+            </p>
         </div>
 
         <div class="mt-2 flex justify-end">
-            <button v-if="reservation_unique || current_step === 2" @click="close" class="btn mr-4">Guardar</button>
+            <button v-if="(reservation_unique && form_is_valid) || (form_is_valid && current_step === 2)" @click="save" class="btn mr-4">Guardar</button>
             <button v-else disabled class="btn mr-4">Guardar</button>
             <button @click="close" class="btn">Cancelar</button>
         </div>
@@ -100,41 +120,110 @@
 .step:after {
     cursor: pointer;
 }
-.list_modal {
+.list_modal, .list_modal_data {
     overflow-y: auto;
-    height: 25rem;
+}
+.list_modal {
+    height: 24rem;
+}
+.list_modal_data {
+    height: 28rem;
+}
+.step-message {
+    height: 4rem;
+    font-size: 0.75rem;
+    text-align: justify;
+    opacity: 0.75;
 }
 </style>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
+import IReservations from "@/services/api/interfaces/IReservations";
+import APIServices from "@/services/api/APIServices";
+
+interface day_week {
+    name: string
+    day: number
+    month: number
+    year: number
+    value: boolean
+}
+
+interface hour_day {
+    hourInt: number
+    hourStr: string
+    value: boolean
+}
+
+interface index_block {
+    day: number
+    hour: number
+}
 
 @Component({})
 export default class Create extends Vue {
     @Prop({ required: true}) item_html!: HTMLElement
     @Prop({ required: true}) reservations_type!: Array<Object>
-    current_days_week: Array<{name: string, day: number, value: boolean}> = [
-        {name: "lunes", day: 15, value: false},
-        {name: "martes", day: 16, value: false},
-        {name: "miercoles", day: 17, value: false},
-        {name: "jueves", day: 18, value: false},
-        {name: "viernes", day: 19, value: false}
+    current_days_week: Array<day_week> = [
+        {name: "lunes", day: 0, value: false, year: 0, month: 0},
+        {name: "martes", day: 0, value: false, year: 0, month: 0},
+        {name: "miercoles", day: 0, value: false, year: 0, month: 0},
+        {name: "jueves", day: 0, value: false, year: 0, month: 0},
+        {name: "viernes", day: 0, value: false, year: 0, month: 0}
     ]
-    reservation_unique: boolean = true
+    options_step: Array<string> = ['Datos', 'Dias', 'Horas']
     current_step: number = 0
-    data_hours: Array<{hourInt: number, hourStr: string, value: boolean}> = []
+    weeks_repeat: number = 1
+
+    form_is_valid: boolean = false
+
+    index_day_hour_block: index_block | null = null
+    reservation_unique: boolean = true
+    data_hours: Array<hour_day> = []
+
+    reservation_data: {instructor?: any, group?: any, course?: any, type?: any} = {instructor: null, group: null, course: null, type: null}
+    changeReservationInstructor = (e: any) => this.reservation_data.instructor= e.target.value
+    changeReservationCourse = (e: any) => this.reservation_data.course = e.target.value
+    changeReservationGroup = (e: any) => this.reservation_data.group = e.target.value
+    changeReservationType = (e: any) => this.reservation_data.type = e.target.value
 
     mounted() {
+        const _reservations = this.data_reservation
+
+        // Extract date from element HTML ID
+        let _date: Array<string> = _reservations.day.split("/").reverse()
+        let date: Date = new Date(parseInt(_date[0]), parseInt(_date[1])-1, parseInt(_date[2]))
+        let _hour: number = parseInt(_reservations.hour.split(":")[0])
+        let hour = _hour - this.$store.state.calendar_time_hrs.start - 1
+        this.index_day_hour_block = { day: date.getDay() - 1,  hour }
+
+        // Mapping week (initialize of start day week)
+        date.setDate(date.getDate() - this.index_day_hour_block.day)
+        let start_day_week = date.getDate()
+        this.current_days_week.forEach((item: day_week, index: number) => {
+            date.setDate(start_day_week + index)
+            item.day = date.getDate()
+            item.month = date.getMonth()
+            item.year = date.getFullYear()
+            item.value = index == this.index_day_hour_block?.day
+        })
+
+        // Get hours values and index (assigned values)
         let time = this.$store.state.calendar_time_hrs
         for (let index = time.start + 1; index <= time.end; index++) {
-            this.data_hours.push({ hourInt: index, hourStr: this.f2d(index) + ":00", value: false })
+            let hourStr = this.f2d(index) + ":00"
+            let value = (index - time.start - 1) === this.index_day_hour_block.hour
+            this.data_hours.push({ hourInt: index, hourStr, value })
         }
     }
 
-    close() {
-        this.reservation_unique = true
-        this.current_step = 0
-        this.$emit("close")
+    /**
+     * Create 24Hours format (input: 5, output: 05:00)
+     * @param num Range 1 - 24
+     */
+    f2d(num: number): string {
+        return (num > 9) ?num+"" :"0"+num
     }
 
     get data_reservation(): {day: string, hour: string} {
@@ -143,8 +232,98 @@ export default class Create extends Vue {
         return { day, hour: this.f2d(parseInt(data[0]))+":00" }
     }
 
-    f2d(num: number): string {
-        return (num > 9) ?num+"" :"0"+num
+    close() {
+        this.reservation_unique = true
+        this.current_step = 0
+        this.form_is_valid = false
+        this.$emit("close")
+    }
+
+    sorter(firstKey: any, secondKey: any) {
+        return function(a: any, b: any) {
+            if (a[firstKey] > b[firstKey]) return -1;
+            else if (a[firstKey] < b[firstKey]) return 1;
+            else {
+                if (a[secondKey] > b[secondKey]) return 1;
+                else if (a[secondKey] < b[secondKey]) return -1;
+                else return 0;
+            }
+        }
+    }
+
+    @Watch("reservation_data", { immediate: true, deep: true })
+    form_data_is_valid() {
+        const { type, course, group, instructor } = this.reservation_data
+        if (!type || !course || !group || !instructor) return this.form_is_valid = false
+        this.form_is_valid = true
+    }
+
+    async save() {
+        if (!this.form_is_valid) {
+            this.$store.state.alert = { type: "error",  show: true,  message: "Datos faltantes" }
+        }
+
+        if (!this.index_day_hour_block) {
+            this.$store.state.alert = { type: "error",  show: true,  message: "Ocurrio un error al crear la reservacion" }
+            return this.close()
+        }
+
+        // Filter days and hours
+        const days_week = (this.reservation_unique) ?[this.current_days_week[this.index_day_hour_block.day]]
+            :this.current_days_week.filter((item: day_week) => item.value)
+        const hours_day = (this.reservation_unique) ?[this.data_hours[this.index_day_hour_block.hour]]
+            :this.data_hours.filter((item: hour_day) => item.value)
+
+        // Create new group for reservations
+        const _reservation: Array<IReservations> = this.$store.state.reservations
+        let grouping = 1
+        if (_reservation && _reservation[0]) {
+            _reservation.sort( function (a, b) {return a.grouping - b.grouping})
+            grouping = _reservation.reverse()[0].grouping + 1
+        }
+
+        // Get lab id and more data of reservations
+        const lab_id = this.$store.state.current_lab.id
+        const {instructor, course, group, type} = this.reservation_data
+
+        // Create instances IReservations
+        let reservations_queue: Array<IReservations> = []
+
+        if (this.reservation_unique) this.weeks_repeat = 1
+        for (let week = 0; week < this.weeks_repeat; week++) {
+            days_week.forEach((day_week: day_week) => {
+                // Get properties for days_week
+                let {year, day, month} = day_week
+                let date_week: Date = new Date(year, month, day + (week * 7))
+
+                hours_day.forEach((hour_day: hour_day) => {
+                    reservations_queue.push({
+                        instructor_id: instructor,
+                        group_id: group,
+                        course_id: course,
+                        lab_id: lab_id,
+                        select_year: date_week.getFullYear(),
+                        select_month: date_week.getMonth(),
+                        select_day: date_week.getDate(),
+                        select_hour: hour_day.hourInt,
+                        tipo: type,
+                        grouping: grouping
+                    })
+                })
+            })
+        }
+
+        // Upload reservations and update in local
+        for (let reservations of reservations_queue) {
+            await APIServices.CreateReservation(reservations).then((result: IReservations | null) => {
+                if (result) {
+                    this.$store.state.alert = { type: "success", show: true,  message: "Nueva reservacion: " + result.id }
+                    this.$store.state.reservations.push(result)
+                }
+            })
+        }
+
+        this.close()
     }
 }
 </script>

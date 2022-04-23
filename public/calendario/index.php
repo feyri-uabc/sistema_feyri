@@ -7,11 +7,9 @@
 
         let key = "<?php foreach($_COOKIE as $key => $value) if(strpos($key, 'remember_web_') !== false) echo $value ?>"
         const remember_session = (key.length > 0) ?key :null
-        if (remember_session) setCookie("remember_session", remember_session, 5)
+        if (remember_session) setCookie("remember_session", remember_session, 7)
         else setCookie("remember_session", "", -1)
 
         tailwind.config = {
-            daisyui: {
-                themes: ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"],
-            },
-        }</script><link href="/calendario/css/app.a3b67053.css" rel="preload" as="style"><link href="/calendario/js/app.eeb7396e.js" rel="preload" as="script"><link href="/calendario/js/chunk-vendors.df1cc7ca.js" rel="preload" as="script"><link href="/calendario/css/app.a3b67053.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but calendario-frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/calendario/js/chunk-vendors.df1cc7ca.js"></script><script src="/calendario/js/app.eeb7396e.js"></script></body></html>
+            daisyui: { themes: ["light", "dark"] },
+        }</script><link href="/calendario/css/app.1cf676dc.css" rel="preload" as="style"><link href="/calendario/js/app.79c1e25a.js" rel="preload" as="script"><link href="/calendario/js/chunk-vendors.df1cc7ca.js" rel="preload" as="script"><link href="/calendario/css/app.1cf676dc.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but calendario-frontend doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/calendario/js/chunk-vendors.df1cc7ca.js"></script><script src="/calendario/js/app.79c1e25a.js"></script></body></html>

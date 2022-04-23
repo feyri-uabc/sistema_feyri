@@ -44,7 +44,7 @@ export default class Create extends Vue {
         await APIServices.CreateGroup(group).then((result: IGroups | null) => {
             if (result == null) return this.$store.state.alert = { type: "error",  show: true,  message: "Error al registrar el grupo: " + this.current_name }
             this.$store.state.alert = { type: "success",  show: true,  message: "Nuevo grupo: " + this.current_name }
-            this.$store.state.laboratories.push(result)
+            this.$store.state.groups.push(result)
         })
         this.close()
     }

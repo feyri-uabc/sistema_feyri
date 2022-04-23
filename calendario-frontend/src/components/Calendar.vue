@@ -101,7 +101,6 @@ export default class Calendar extends Vue {
     current_month = 0
     current_start_date = new Date()
     days_week: any = null
-    update = false
 
     mounted() {
         this.current_start_date = new Date()
@@ -109,8 +108,7 @@ export default class Calendar extends Vue {
     }
 
     days_for_week() {
-        this.$emit("update:update-calendar", this.update)
-        this.update = !this.update
+        this.$emit("update-calendar", true)
 
         this.current_month = this.current_start_date.getMonth()
         this.current_start_date.setDate(this.current_start_date.getDate() - this.current_start_date.getDay() + 1)
@@ -128,6 +126,8 @@ export default class Calendar extends Vue {
         }
         this.current_start_date.setDate(this.current_start_date.getDate() - (maxDays - 1))
         this.days_week = result
+
+        this.$forceUpdate()
     }
 
     createDateID(day: any, time: number) {

@@ -1,7 +1,7 @@
 <template>
   <section class="section-home">
       <div class="mx-2 sm:mx-10 mb-20">
-          <Calendar :update-calendar.sync="updateCurrentLab" :start_time="$store.state.calendar_time_hrs.start" :end_time="$store.state.calendar_time_hrs.end">
+          <Calendar v-on:update-calendar="updateCalendar" :start_time="$store.state.calendar_time_hrs.start" :end_time="$store.state.calendar_time_hrs.end">
               <template v-slot:subtitle>
                   <div class="grid w-full justify-center">
                       <h2 class="text-xl font-bold text-center" v-if="$store.state.current_lab">
@@ -48,13 +48,16 @@
 </style>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import Calendar, {GetCalendarFieldId} from "@/components/Calendar.vue";
 import CardModal from "@/components/CardModal.vue";
 import Create from "@/components/modal_body/reservation/Create.vue";
 import Remove from "@/components/modal_body/reservation/Remove.vue";
 import ILaboratories from "@/services/api/interfaces/ILaboratories";
 import IReservations from "@/services/api/interfaces/IReservations";
+import IGroups from "@/services/api/interfaces/Groups";
+import ICourses from "@/services/api/interfaces/Courses";
+import IInstructors from "@/services/api/interfaces/IInstructors";
 
 @Component({ components: {Create, Remove, Calendar, CardModal} })
 export default class Home extends Vue {
@@ -69,8 +72,20 @@ export default class Home extends Vue {
     modalType: string | null = null // create, delete
     current_item_box: HTMLElement | null = null
 
+    // TODO: Repair consult in store (sometimes return name error | created reservation)
+    async findState(state: string, id: number): Promise<string> {
+        if (state == 'group') return this.$store.state.groups.filter((item: IGroups) => item.id === id)[0].name
+        else if (state == 'course') return this.$store.state.courses.filter((item: ICourses) => item.id === id)[0].name
+        else if (state == 'instructor') return this.$store.state.instructors.filter((item: IInstructors) => item.id === id)[0].name
+        return ""
+    }
+
     get current_lab(): ILaboratories | null {
         return this.$store.state.current_lab
+    }
+
+    get current_reservations(): Array<IReservations> | null {
+        return this.$store.state.reservations
     }
 
     openModal(type: string) {
@@ -83,21 +98,38 @@ export default class Home extends Vue {
         this.modalType = null
     }
 
-    loadReservations() {
-        let reservations: Array<IReservations> = this.$store.state.reservations
+    reservation_type_data(type: string): {value: string, color: string} {
+        return this.reservation_types.filter(item => item.value.toLowerCase() == type.toLowerCase())[0]
+    }
+
+    // TODO: Resolver insercion, colocando un dispatch en el store al finalizar todas las incersiones
+    @Watch("current_reservations", { immediate: true, deep: true })
+    async loadReservations() {
+        if (!this.current_reservations || !this.$store.state.current_lab) return
+
+        let reservations: Array<IReservations> | null = this.current_reservations
         reservations = reservations.filter((item: IReservations) => item.lab_id == this.$store.state.current_lab.id)
         if (reservations && reservations.length > 0) {
-            reservations.forEach((item: IReservations) => {
-                let {id, tipo, lab_id, select_day, select_month, select_year, select_hour, instructor_id} = item
+            for (const item of reservations) {
+                let {id, instructor_id, course_id, group_id ,tipo, select_day, select_month, select_year, select_hour} = item
                 let element: HTMLElement | null = GetCalendarFieldId(select_year, select_month, select_day, select_hour)
-                if (element) element.innerHTML = `<div id="${id}">${tipo}</div>`
-            })
+
+                if (element) element.innerHTML = `
+                        <div class="w-full p-2 h-full text-gray-900 ${this.reservation_type_data(tipo).color}" id="${id}">
+                            <span>${ await this.findState('group', group_id) }</span>
+                            <span>${ await this.findState('course', course_id) }</span>
+                            <span>${ await this.findState('instructor', instructor_id) }</span>
+                        </div>
+                    `.trim()
+
+            }
         }
     }
 
-    loadActionsBoxes() {
+    clearBoxes() {
         let boxes = document.querySelectorAll(".row-days .box")
         boxes.forEach((item: any) => {
+            item.innerHTML = ""
             item.onclick = (e: any) => {
                 this.current_item_box = item
                 this.openModal((item.children.length < 1) ?"create" :"remove")
@@ -106,14 +138,12 @@ export default class Home extends Vue {
     }
 
     @Watch("current_lab", { immediate: true, deep: true })
-    updateCurrentLab() {
-        if (!this.current_lab) return
-
-        // Load Reservations
-        this.loadReservations()
-
-        // Create boxes (add events)
-        this.loadActionsBoxes()
+    updateCalendar() {
+        this.clearBoxes()
+        setTimeout(() => {
+            if (!this.current_lab) return
+            this.loadReservations()
+        }, 500)
     }
 }
 </script>

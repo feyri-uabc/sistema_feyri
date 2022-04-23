@@ -15,7 +15,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="group in $store.state.groups">
+                    <tr v-for="group in groups">
                         <th>{{ group.id }}</th>
                         <td>{{ group.name }}</td>
                         <td>{{ group.description }}</td>
@@ -39,6 +39,7 @@
         <CardModal :toggle="open_modal" v-on:escape="closeModal">
             <template v-slot:body>
                 <Create v-if="modalType==='create'" v-on:close="closeModal"/>
+                <Edit v-if="modalType==='edit'" :group="current_group" v-on:close="closeModal"/>
                 <Remove v-if="modalType==='remove'" :group="current_group" v-on:close="closeModal"/>
             </template>
         </CardModal>
@@ -51,14 +52,19 @@ import IGroups from "@/services/api/interfaces/Groups";
 import CardModal from "@/components/CardModal.vue";
 import Create from "@/components/modal_body/group/Create.vue";
 import Remove from "@/components/modal_body/group/Remove.vue";
+import Edit from "@/components/modal_body/group/Edit.vue";
 
 @Component({
-    components: {CardModal, Create, Remove}
+    components: {CardModal, Create, Remove, Edit}
 })
 export default class Groups extends Vue {
     current_group: IGroups | null = null
     open_modal: boolean = false
     modalType: string | null = null // edit, remove
+
+    get groups() {
+        return this.$store.state.groups
+    }
 
     openModal(type: string) {
         this.open_modal = true
