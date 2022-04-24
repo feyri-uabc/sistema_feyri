@@ -35,7 +35,7 @@ export default class Remove extends Vue {
     }
 
     async remove() {
-        if (this.instructor.id) APIServices.DeleteInstructor(this.instructor.id)
+        if (this.instructor.id) await APIServices.DeleteInstructor(this.instructor.id)
             .then(result => {
                 if (result == null) return
                 this.$store.state.alert = { type: "error",  show: true,  message: "Se elimino al instructor: " + this.instructor.name }

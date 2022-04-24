@@ -55,7 +55,7 @@
 import {Component, Prop, Vue} from "vue-property-decorator";
 
 @Component({})
-export default class Calendario extends Vue {
+export default class CardModal extends Vue {
     @Prop({required: true}) toggle!: boolean
 
     mounted() {

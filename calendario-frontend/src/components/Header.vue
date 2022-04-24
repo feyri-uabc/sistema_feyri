@@ -1,14 +1,14 @@
 <template>
-    <nav class="flex items-center justify-between flex-wrap sm:px-10 py-5 px-6 print:hidden">
+    <nav class="header flex items-center justify-between flex-wrap sm:px-10 py-5 px-6 print:hidden">
         <div class="left flex items-center">
             <label class="btn btn-circle btn-ghost swap swap-rotate inline-grid lg:hidden">
-                <input type="checkbox"/>
+                <input v-model="$store.state.open_burger_main" type="checkbox"/>
                 <svg class="swap-off fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z"/></svg>
                 <svg class="swap-on fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512"><polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49"/></svg>
             </label>
 
-            <router-link to="/" class="uppercase hover:text-primary mr-6 font-black text-xl text-current">FEYRI LABS</router-link>
-            <router-link class="uppercase hover:text-primary mr-6 hidden lg:inline-block text-align:center"
+            <router-link to="/" class="link-home uppercase hover:text-primary mr-6 font-black text-xl text-current">FEYRI LABS</router-link>
+            <router-link v-if="$store.state.token_exist" class="uppercase hover:text-primary mr-6 hidden lg:inline-block text-align:center"
                          :to="route.path"
                          v-for="route in [{name:'Labs', path:'/labs'}, {name:'Instructores', path:'/instructors'},
                                           {name:'Materias', path:'/courses'}, {name:'Grupos', path:'/groups'}]">
@@ -29,11 +29,27 @@
 </template>
 
 <style>
+.header {
+    height: 5rem;
+}
 nav {
     z-index: 9999;
     position: sticky;
     top: 0;
     backdrop-filter: blur(10px);
+}
+@media screen and (max-width: 420px) {
+    .link-home {
+        display: none;
+    }
+}
+@media screen and (max-width: 320px) {
+    .link-header-text-home {
+        font-size: 1rem;
+    }
+    .link-header-text {
+        font-size: .7rem;
+    }
 }
 </style>
 

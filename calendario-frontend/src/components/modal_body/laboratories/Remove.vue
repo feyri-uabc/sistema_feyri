@@ -35,7 +35,7 @@ export default class Remove extends Vue {
     }
 
     async remove() {
-        if (this.laboratory.id) APIServices.DeleteLaboratory(this.laboratory.id)
+        if (this.laboratory.id) await APIServices.DeleteLaboratory(this.laboratory.id)
             .then(result => {
                 if (result == null) return
                 this.$store.state.alert = { type: "error",  show: true,  message: "Se elimino al laboratorio: " + this.laboratory.name }

@@ -30,20 +30,42 @@ export default new Vuex.Store({
         //
         calendar_time_hrs: {
             start: 8,
-            end: 12
+            end: 19
         },
-        is_load: false
+        //
+        open_burger_main: false,
+        //
+        box_max_length: 20
     },
     getters: {
         stateIsEmpty(state: any) {
             return !state.reservations && !state.instructors && !state.laboratories
         },
-        loadDate: (state: any) => async (): Promise<void> => {
-            await APIServices.GetAllLaboratories().then(result => state.laboratories = result)
-            await APIServices.GetAllInstructors().then(result => state.instructors = result)
-            await APIServices.GetAllReservations().then(result => state.reservations = result)
-            await APIServices.GetAllCourses().then(result => state.courses = result)
-            await APIServices.GetAllGroups().then(result => state.groups = result)
+        loadDate: (state: any) => async (): Promise<boolean> => {
+            let error_download = false
+            try {
+                await APIServices.GetAllLaboratories().then(result => {
+                    if (!result) return error_download = true
+                    state.laboratories = result
+                })
+                await APIServices.GetAllInstructors().then(result => {
+                    if (!result) return error_download = true
+                    state.instructors = result
+                })
+                await APIServices.GetAllReservations().then(result => {
+                    if (!result) return error_download = true
+                    state.reservations = result
+                })
+                await APIServices.GetAllCourses().then(result => {
+                    if (!result) return error_download = true
+                    state.courses = result
+                })
+                await APIServices.GetAllGroups().then(result => {
+                    if (!result) return error_download = true
+                    state.groups = result
+                })
+            } catch (e: any) { error_download = true }
+            return error_download
         }
     },
     mutations: {},

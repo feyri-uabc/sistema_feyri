@@ -45,6 +45,17 @@
     border-radius: 5rem;
     border: 0.25rem solid rgba(0, 0, 0, 0.1);
 }
+.box-content-parent {
+    display: grid;
+    gap: 0;
+    line-height: 0;
+}
+.box-content *:first-child {
+    font-size: 0.75rem;
+}
+.box-content *:last-child {
+    font-size: 0.85rem;
+}
 </style>
 
 <script lang="ts">
@@ -58,6 +69,7 @@ import IReservations from "@/services/api/interfaces/IReservations";
 import IInstructors from "@/services/api/interfaces/IInstructors";
 import ICourses from "@/services/api/interfaces/Courses";
 import IGroups from "@/services/api/interfaces/Groups";
+import {Route} from "vue-router";
 
 @Component({ components: {Create, Remove, Calendar, CardModal} })
 export default class Home extends Vue {
@@ -94,6 +106,11 @@ export default class Home extends Vue {
         return this.reservation_types.filter(item => item.value.toLowerCase() == type.toLowerCase())[0]
     }
 
+    text_box(data: string) {
+        let max_length = this.$store.state.box_max_length
+        return (data.length >= max_length) ?data.slice(0, max_length - 3) + "..." :data
+    }
+
     // TODO: Resolver insercion, colocando un dispatch en el store al finalizar todas las incersiones
     @Watch("current_reservations", { immediate: true, deep: true })
     async loadReservations() {
@@ -115,15 +132,25 @@ export default class Home extends Vue {
                 let group: IGroups[] = groups_.filter((item: any) => item.id = group_id)
 
                 if (element) {
-                    element.onclick = (e: any) => {
-                        this.current_item_box = element
-                        this.openModal("remove")
+                    if (this.$store.state.token_exist) {
+                        element.onclick = (e: any) => {
+                            this.current_item_box = element
+                            this.openModal("remove")
+                        }
                     }
                     element.innerHTML = `
-                        <div class="w-full p-2 h-full text-gray-900 ${this.reservation_type_data(tipo).color}" id="${id}">
-                            <span>${ instructor[0].name }</span>
-                            <span>${ course[0].name }</span>
-                            <span>${ group[0].name }</span>
+                        <div class="box-content-parent w-full p-2 h-full text-gray-900 ${this.reservation_type_data(tipo).color}" id="${id}">
+                            <div class="box-content" title="${ instructor[0].name }">
+                                <span>Docente:</span> <span class="text-sm font-bold">${ this.text_box(instructor[0].name) }</span>
+                            </div>
+                            <div class="box-content" title="${ course[0].name }">
+                                <span>Materia:</span>
+                                <span class="text-sm font-bold">${ this.text_box(course[0].name) }</span>
+                            </div>
+                            <div class="box-content" title="${ group[0].name }">
+                                <span>Grupo:</span>
+                                <span class="text-sm font-bold">${ this.text_box(group[0].name) }</span>
+                            </div>
                         </div>
                     `.trim()
                 }
@@ -133,14 +160,22 @@ export default class Home extends Vue {
     }
 
     clearBoxes() {
+        if (!this.current_lab) return
         let boxes = document.querySelectorAll(".row-days .box")
         boxes.forEach((item: any) => {
             item.innerHTML = ""
-            item.onclick = (e: any) => {
-                this.current_item_box = item
-                this.openModal("create")
+            if (this.$store.state.token_exist) {
+                item.onclick = (e: any) => {
+                    this.current_item_box = item
+                    this.openModal("create")
+                }
             }
         })
+    }
+
+    @Watch("$route", { immediate: true, deep: true })
+    onUrlChange(value: Route) {
+        setTimeout(() => this.clearBoxes(), 100)
     }
 
     @Watch("current_lab", { immediate: true, deep: true })
