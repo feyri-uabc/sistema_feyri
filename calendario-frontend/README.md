@@ -26,7 +26,7 @@
     - [x] Read
     - [x] Update
     - [x] Delete
-- [ ] Menu desplegable (breakpoints)
+- [x] Menu desplegable (breakpoints)
 - [x] Screen Loader
 ---
 ### Tareas tentativas a implementar
