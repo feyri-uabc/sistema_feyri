@@ -30,7 +30,7 @@ export default new Vuex.Store({
         //
         calendar_time_hrs: {
             start: 6,
-            end: 20
+            end: 22
         },
         //
         open_burger_main: false,
