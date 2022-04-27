@@ -29,5 +29,9 @@
 - [x] Menu desplegable (breakpoints)
 - [x] Screen Loader
 ---
+- [x] Correccion de ruta en dashboard para el calendario
+- [x] Modificar horario: 7 a 20
+- [ ] Corregir reservaciones (sobreescribe los indices)
+---
 ### Tareas tentativas a implementar
 - [ ] Cambinar horarios consecutivos en calendario

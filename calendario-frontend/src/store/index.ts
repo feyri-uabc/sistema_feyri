@@ -29,8 +29,8 @@ export default new Vuex.Store({
         current_lab: null,
         //
         calendar_time_hrs: {
-            start: 8,
-            end: 19
+            start: 6,
+            end: 20
         },
         //
         open_burger_main: false,
