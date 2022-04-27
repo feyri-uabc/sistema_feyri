@@ -111,7 +111,6 @@ export default class Home extends Vue {
         return (data.length >= max_length) ?data.slice(0, max_length - 3) + "..." :data
     }
 
-    // TODO: Resolver insercion, colocando un dispatch en el store al finalizar todas las incersiones
     @Watch("current_reservations", { immediate: true, deep: true })
     async loadReservations() {
         if (!this.current_reservations || !this.$store.state.current_lab) return
@@ -119,17 +118,13 @@ export default class Home extends Vue {
         let reservations: Array<IReservations> | null = this.current_reservations
         reservations = reservations.filter((item: IReservations) => item.lab_id == this.$store.state.current_lab.id)
         if (reservations && reservations.length > 0) {
-            let instructor_ = this.$store.state.instructors
-            let courses_ = this.$store.state.courses
-            let groups_ = this.$store.state.groups
-
             for (const item of reservations) {
                 let {id, instructor_id, course_id, group_id ,tipo, select_day, select_month, select_year, select_hour} = item
                 let element: HTMLElement | null = GetCalendarFieldId(select_year, select_month, select_day, select_hour)
 
-                let instructor: IInstructors[] = instructor_.filter((item: any) => item.id = instructor_id)
-                let course: ICourses[] = courses_.filter((item: any) => item.id = course_id)
-                let group: IGroups[] = groups_.filter((item: any) => item.id = group_id)
+                let instructor: IInstructors[] = this.$store.state.instructors.filter((item: any) => item.id == instructor_id)
+                let course: ICourses[] = this.$store.state.courses.filter((item: any) => item.id == course_id)
+                let group: IGroups[] = this.$store.state.groups.filter((item: any) => item.id == group_id)
 
                 if (element) {
                     if (this.$store.state.token_exist) {

@@ -35,7 +35,7 @@ export default new Vuex.Store({
         //
         open_burger_main: false,
         //
-        box_max_length: 20
+        box_max_length: 60
     },
     getters: {
         stateIsEmpty(state: any) {
