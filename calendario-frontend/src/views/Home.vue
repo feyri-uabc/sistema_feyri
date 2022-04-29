@@ -50,6 +50,11 @@
     gap: 0;
     line-height: 0;
 }
+.box-content-parent .box-content {
+    max-width: 14rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 .box-content *:first-child {
     font-size: 0.75rem;
 }

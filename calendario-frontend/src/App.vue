@@ -41,6 +41,10 @@
 </template>
 
 <style>
+:root {
+    --max-columns: 10;
+}
+
 *::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
@@ -97,6 +101,9 @@ export default class App extends Vue {
         this.show_btn = this.$store.state.laboratories != null && !!this.$store.state.laboratories[0]
         this.show_loader = false
         this.$store.state.token_exist = Cookie.containKey('remember_session')
+
+        let body: any = document.querySelector("body")
+        body.style.setProperty("--max-columns", this.$store.state.max_reservation_weeks + "")
     }
 
     @Watch("$route", { immediate: true, deep: true })

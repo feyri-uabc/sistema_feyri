@@ -76,9 +76,9 @@
         <div v-else-if="current_step === 1" class="list_modal pt-4">
             <div class="mx-10 user-select-none mb-6">
                 <h1 class="font-bold uppercase text-md text-center">Semanas a repetir <span class="border-b-2 px-2 border-current">{{weeks_repeat}}</span></h1>
-                <input v-model="weeks_repeat" type="range" min="1" max="10" value="1" class="range range-xs" step="1">
-                <div class="w-full flex justify-between text-xs px-2">
-                    <span v-for="index in $store.state.max_reservation_weeks  ">{{index}}</span>
+                <input v-model="weeks_repeat" type="range" min="1" :max="$store.state.max_reservation_weeks" value="1" class="range range-xs" step="1">
+                <div class="days-step w-full justify-between text-xs">
+                    <span v-for="index in $store.state.max_reservation_weeks">{{index}}</span>
                 </div>
             </div>
 
@@ -119,6 +119,11 @@
 </template>
 
 <style>
+.days-step {
+    display: grid;
+    grid-template-columns: repeat(var(--max-columns), 1fr);
+    text-align: center;
+}
 .step {
     user-select: none;
 }
@@ -287,7 +292,7 @@ export default class Create extends Vue {
         let grouping = 1
         if (_reservation && _reservation[0]) {
             _reservation.sort( function (a, b) {return a.grouping - b.grouping})
-            grouping = _reservation.reverse()[0].grouping + 1
+            grouping = parseInt(_reservation.reverse()[0].grouping + "") + 1
         }
 
         // Get lab id and more data of reservations
@@ -323,7 +328,7 @@ export default class Create extends Vue {
 
         this.removed = true
 
-        if (reservations_queue.length < 2 && reservations_queue[0]) {
+        if (reservations_queue.length == 1) {
             await APIServices.CreateReservation(reservations_queue[0]).then((result: IReservations | null) => {
                 if (result) {
                     this.$store.state.alert = { type: "success", show: true,  message: "Nueva reservacion: " + result.id }

@@ -6,7 +6,7 @@ import IGroups from "@/services/api/interfaces/Groups";
 import ICourses from "@/services/api/interfaces/Courses";
 
 export default class APIServices {
-    private static path: string = (process.env.NODE_ENV !== 'production' ?"http://localhost:8000/" :"/") + "api/calendar_"
+    private static path: string = (process.env.NODE_ENV !== 'production' ?"http://localhost:8000/" :"http://soporte.feyri.mx/") + "api/calendar_"
 
     private static async GetAll<T>(_path: string, request: RequestInit = { method: "GET" }): Promise<Array<T | null>> {
         return await fetch(this.path + _path, request)
@@ -36,16 +36,22 @@ export default class APIServices {
 
     private static async Create<T>(_path: string, item: any, multiple: boolean = false): Promise<T | null> {
         let formData: any = new FormData()
-        formData.append("multiple", multiple)
-        for (let key of Object.keys(item)) {
-            formData.append(key, (multiple) ?JSON.stringify(item[key]) :item[key])
+        if (!multiple) {
+            for (let key of Object.keys(item)) {
+                formData.append(key, item[key])
+            }
+        } else {
+            formData.append("multiple", multiple)
+            for (let key of Object.keys(item)) {
+                formData.append(key, JSON.stringify(item[key]))
+            }
         }
 
         let request: RequestInit = {
             method: "POST",
             body: formData
         }
-
+        console.log(this.path + _path)
         return await fetch(this.path + _path, request)
             .then(data => data.json())
             .then((result: T | null) => result)
