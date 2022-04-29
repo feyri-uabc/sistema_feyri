@@ -14,7 +14,7 @@ export default class APIServices {
             .then((result: Array<T> | []) => result)
     }
 
-    private static async Delete<T>(_path: string, request: RequestInit = { method: "DELETE" }): Promise<string | null> {
+    private static async Delete<T>(_path: string, request: RequestInit = { method: "DELETE" }, multiple: boolean = false): Promise<string | null> {
         return await fetch(this.path + _path, request)
             .then(data => data.text())
             .then((result: string | null) => result)
@@ -34,9 +34,12 @@ export default class APIServices {
             .then((result: string | null) => result)
     }
 
-    private static async Create<T>(_path: string, item: any): Promise<T | null> {
+    private static async Create<T>(_path: string, item: any, multiple: boolean = false): Promise<T | null> {
         let formData: any = new FormData()
-        for (let key of Object.keys(item)) formData.append(key, item[key])
+        formData.append("multiple", multiple)
+        for (let key of Object.keys(item)) {
+            formData.append(key, (multiple) ?JSON.stringify(item[key]) :item[key])
+        }
 
         let request: RequestInit = {
             method: "POST",
@@ -96,6 +99,10 @@ export default class APIServices {
 
     public static async CreateReservation(reservation: IReservations): Promise<IReservations | null> {
         return this.Create<IReservations>("reservations", reservation)
+    }
+
+    public static async CreateReservationMultiple(reservation: IReservations[]): Promise<IReservations | null> {
+        return this.Create<IReservations>("reservations", {reservations: reservation}, true)
     }
 
     // --

@@ -35,7 +35,9 @@ export default new Vuex.Store({
         //
         open_burger_main: false,
         //
-        box_max_length: 60
+        box_max_length: 60,
+        //
+        max_reservation_weeks: 20
     },
     getters: {
         stateIsEmpty(state: any) {

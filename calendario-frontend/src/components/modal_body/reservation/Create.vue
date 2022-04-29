@@ -78,7 +78,7 @@
                 <h1 class="font-bold uppercase text-md text-center">Semanas a repetir <span class="border-b-2 px-2 border-current">{{weeks_repeat}}</span></h1>
                 <input v-model="weeks_repeat" type="range" min="1" max="10" value="1" class="range range-xs" step="1">
                 <div class="w-full flex justify-between text-xs px-2">
-                    <span v-for="index in 10">{{index}}</span>
+                    <span v-for="index in $store.state.max_reservation_weeks  ">{{index}}</span>
                 </div>
             </div>
 
@@ -323,15 +323,27 @@ export default class Create extends Vue {
 
         this.removed = true
 
-        // Upload reservations and update in local
-        for (let reservations of reservations_queue) {
-            await APIServices.CreateReservation(reservations).then((result: IReservations | null) => {
+        if (reservations_queue.length < 2 && reservations_queue[0]) {
+            await APIServices.CreateReservation(reservations_queue[0]).then((result: IReservations | null) => {
                 if (result) {
                     this.$store.state.alert = { type: "success", show: true,  message: "Nueva reservacion: " + result.id }
                     this.$store.state.reservations.push(result)
                 }
             })
+
+            return this.close()
         }
+
+        await APIServices.CreateReservationMultiple(reservations_queue).then(async result => {
+            if (result) {
+                this.$store.state.alert = { type: "success", show: true,  message: "Nuevo grupo de reservaciones creado" }
+                await APIServices.GetAllReservations().then((response: Array<IReservations | null>) => {
+                    if (response) this.$store.state.reservations = response
+                })
+            } else {
+                this.$store.state.alert = { type: "error", show: true,  message: "Ocurrio un error, por favor, recarga la aplicacion" }
+            }
+        })
 
         this.close()
     }

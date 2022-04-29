@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CalendarReservations;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
+use PHPUnit\Exception;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CalendarReservationsController extends Controller
 {
@@ -25,18 +28,26 @@ class CalendarReservationsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'lab_id' => 'integer|required',
-            'instructor_id' => 'integer|required',
-            'course_id' => 'integer|required',
-            'group_id' => 'integer|required',
-            'grouping' => 'integer|required',
-            'select_year' => 'integer|required',
-            'select_month' => 'integer|required',
-            'select_day' => 'integer|required',
-            'select_hour' => 'integer|required',
-            'tipo' => 'string|required',
-        ]);
+        if ($request->input('multiple')) {
+            try {
+                $reservations = json_decode($request->input("reservations"), true);
+                foreach ($reservations as $reservation) {
+                    (new CalendarReservations([
+                        "lab_id" => $reservation['lab_id'],
+                        "instructor_id" => $reservation['instructor_id'],
+                        "course_id" => $reservation['course_id'],
+                        "group_id" => $reservation['group_id'],
+                        "grouping" => $reservation['grouping'],
+                        "select_year" => $reservation['select_year'],
+                        "select_month" => $reservation['select_month'],
+                        "select_day" => $reservation['select_day'],
+                        "select_hour" => $reservation['select_hour'],
+                        "tipo" => $reservation['tipo']
+                    ]))->save();
+                }
+                return [];
+            } catch (Exception $ignore) { return null; }
+        }
 
         $reservation = new CalendarReservations([
             "lab_id" => $request->input('lab_id'),
