@@ -25,7 +25,9 @@
 
         <div class="days px-2">
             <div class="row-days" v-for="(day, index) in days_week" :title="day.name">
-                <div class="row-head">{{ day.name + " (" + day.day + ")" }}</div>
+                <div class="row-head">
+                    {{ day.name + " (" + day.day + " " + months[day.month] + ")" }}
+                </div>
                 <div v-for="time in (end_time - start_time)" :id="createDateID(day, time)" class="box"/>
             </div>
         </div>
