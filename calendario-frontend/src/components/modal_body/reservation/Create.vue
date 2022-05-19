@@ -200,6 +200,8 @@ export default class Create extends Vue {
     changeReservationType = (e: any) => this.reservation_data.type = e.target.value
 
     mounted() {
+        console.log(this.item_html)
+
         const _reservations = this.data_reservation
         this.removed = false
 
@@ -212,13 +214,12 @@ export default class Create extends Vue {
 
         // Mapping week (initialize of start day week)
         date.setDate(date.getDate() - this.index_day_hour_block.day)
-        let start_day_week = date.getDate()
         this.current_days_week.forEach((item: day_week, index: number) => {
-            date.setDate(start_day_week + index)
             item.day = date.getDate()
             item.month = date.getMonth()
             item.year = date.getFullYear()
             item.value = index == this.index_day_hour_block?.day
+            date.setDate(date.getDate() + 1)
         })
 
         // Get hours values and index (assigned values)

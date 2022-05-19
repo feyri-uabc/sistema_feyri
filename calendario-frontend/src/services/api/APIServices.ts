@@ -6,7 +6,7 @@ import IGroups from "@/services/api/interfaces/Groups";
 import ICourses from "@/services/api/interfaces/Courses";
 
 export default class APIServices {
-    private static path: string = (process.env.NODE_ENV !== 'production' ?"http://localhost:8000/" :"http://soporte.feyri.mx/") + "api/calendar_"
+    private static path: string = (process.env.NODE_ENV !== 'production' ?"http://localhost:8000/" :"https://soporte.feyri.mx/") + "api/calendar_"
 
     private static async GetAll<T>(_path: string, request: RequestInit = { method: "GET" }): Promise<Array<T | null>> {
         return await fetch(this.path + _path, request)
