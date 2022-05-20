@@ -1,5 +1,15 @@
 <template>
     <div class="labs-modal">
+        <div v-if="createRegisterDataForm" class="fixed left-0 top-0 w-full h-full">
+            <CardModal :toggle="createRegisterDataForm">
+                <template v-slot:body>
+                    <CreateInstructor v-if="createRegisterDataFormType === 0" v-on:save="registerDataFormClose(0)" v-on:close="registerDataFormForceClose(0)"/>
+                    <CreateCourse v-if="createRegisterDataFormType === 1" v-on:save="registerDataFormClose(1)" v-on:close="registerDataFormForceClose(1)"/>
+                    <CreateGroup v-if="createRegisterDataFormType === 2" v-on:save="registerDataFormClose(2)" v-on:close="registerDataFormForceClose(2)"/>
+                </template>
+            </CardModal>
+        </div>
+
         <h1 class="font-black uppercase text-2xl text-center">Crear reservacion</h1>
         <h3 class="font-bold uppercase text-lg text-center">
             <span class="pr-2">{{data_reservation.day}}</span>{{data_reservation.hour}}
@@ -37,6 +47,8 @@
                         <option :value="group.id" v-for="group in groups">
                             {{group.name}}
                         </option>
+                        <option disabled :value="null">----------</option>
+                        <option value=""> Crear nuevo grupo </option>
                     </select>
                 </div>
             </div>
@@ -50,6 +62,8 @@
                     <option :value="course.id" v-for="course in courses">
                         {{course.name}}
                     </option>
+                    <option disabled :value="null">----------</option>
+                    <option value=""> Crear nueva materia </option>
                 </select>
             </div>
 
@@ -62,6 +76,8 @@
                     <option :value="instructor.id" v-for="instructor in instructors">
                         {{instructor.name}}
                     </option>
+                    <option disabled :value="null">----------</option>
+                    <option value=""> Crear nuevo instructor </option>
                 </select>
             </div>
 
@@ -124,12 +140,6 @@
     grid-template-columns: repeat(var(--max-columns), 1fr);
     text-align: center;
 }
-.step {
-    user-select: none;
-}
-.step:after {
-    cursor: pointer;
-}
 .list_modal, .list_modal_data {
     overflow-y: auto;
 }
@@ -152,9 +162,12 @@ import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import IReservations from "@/services/api/interfaces/IReservations";
 import APIServices from "@/services/api/APIServices";
 import IInstructors from "@/services/api/interfaces/IInstructors";
-import Instructors from "@/views/Instructors.vue";
 import ICourses from "@/services/api/interfaces/Courses";
 import IGroups from "@/services/api/interfaces/Groups";
+import CardModal from "@/components/CardModal.vue"
+import CreateInstructor from "@/components/modal_body/instructor/Create.vue"
+import CreateCourse from "@/components/modal_body/course/Create.vue"
+import CreateGroup from "@/components/modal_body/group/Create.vue"
 
 interface day_week {
     name: string
@@ -179,7 +192,14 @@ interface ISubInstructors extends IInstructors {
     subname: string
 }
 
-@Component({})
+@Component({
+    components: {
+        CardModal,
+        CreateInstructor,
+        CreateCourse,
+        CreateGroup
+    }
+})
 export default class Create extends Vue {
     @Prop({ required: true}) item_html!: HTMLElement
     @Prop({ required: true}) reservations_type!: Array<Object>
@@ -201,32 +221,72 @@ export default class Create extends Vue {
     reservation_unique: boolean = true
     data_hours: Array<hour_day> = []
 
-    reservation_data: {instructor?: any, group?: any, course?: any, type?: any} = {instructor: null, group: null, course: null, type: null}
-    changeReservationInstructor = (e: any) => this.reservation_data.instructor= e.target.value
-    changeReservationCourse = (e: any) => this.reservation_data.course = e.target.value
-    changeReservationGroup = (e: any) => this.reservation_data.group = e.target.value
-    changeReservationType = (e: any) => this.reservation_data.type = e.target.value
-
+    createRegisterDataForm: Boolean = false
+    createRegisterDataFormType: number = -1
     ignoreCredentials: string[] = ["Dr.", "Dra.", "Psic.", "Mtro.", "Mtra."]
+    reservation_data: {instructor?: any, group?: any, course?: any, type?: any} = {instructor: null, group: null, course: null, type: null}
+
+    registerDataForm(type: number) {
+        this.createRegisterDataForm = true
+        this.createRegisterDataFormType = type
+    }
+
+    maxId(array: (IInstructors | ICourses | IGroups)[]): number {
+        let _current_max = 0
+        for (let item of array) if (item.id && item.id > _current_max) _current_max = item.id
+        return _current_max
+    }
+
+    registerDataFormForceClose(type: number) {
+        if (this.createRegisterDataFormType != -1) {
+            if (type === 0) this.reservation_data.instructor = null
+            else if (type === 1) this.reservation_data.course = null
+            else this.reservation_data.group = null
+            this.createRegisterDataFormType = -1
+        }
+        this.createRegisterDataForm = false
+    }
+
+    registerDataFormClose(type: number) {
+        if (type === 0) this.reservation_data.instructor = this.maxId(this.instructors)
+        else if (type === 1) this.reservation_data.course = this.maxId(this.courses)
+        else this.reservation_data.group = this.maxId(this.groups)
+        this.createRegisterDataFormType = -1
+        this.registerDataFormForceClose(type)
+    }
+
+    changeReservationType = (e: any) => {
+        this.reservation_data.type = e.target.value
+    }
+
+    changeReservationInstructor = (e: any) => {
+        if (!e.target.value) this.registerDataForm(0)
+        else this.reservation_data.instructor = e.target.value
+    }
+
+    changeReservationCourse = (e: any) => {
+        if (!e.target.value) this.registerDataForm(1)
+        else this.reservation_data.course = e.target.value
+    }
+
+    changeReservationGroup = (e: any) => {
+        if (!e.target.value) this.registerDataForm(2)
+        else this.reservation_data.group = e.target.value
+    }
+
     removeCredential(instructor: IInstructors): ISubInstructors {
         let name = ""
         for (let item of this.ignoreCredentials) {
-            if (instructor.name.includes(item)) {
-                name = instructor.name.replace(item, "")
-            }
+            if (instructor.name.includes(item)) name = instructor.name.replace(item, "")
         }
         if (name == "") name = instructor.name
-        return {
-            ...instructor,
-            subname: name.trim()
-        }
+        return {...instructor, subname: name.trim() }
     }
 
     get instructors() {
         const _instructors: IInstructors[] = this.$store.state.instructors
         let instructors: IInstructors[] = []
         _instructors.forEach(item => instructors.push(this.removeCredential(item)))
-        console.log(_instructors)
         return instructors
             .sort(this.sorter("subname", "id"))
             .reverse()

@@ -16,7 +16,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 .modal-popup {
     top: 0;
     z-index: 99999999;

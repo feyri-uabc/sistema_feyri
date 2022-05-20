@@ -45,6 +45,7 @@ export default class Create extends Vue {
             if (result == null) return this.$store.state.alert = { type: "error",  show: true,  message: "Error al registrar la materia: " + this.current_name }
             this.$store.state.alert = { type: "success",  show: true,  message: "Nuevo materia: " + this.current_name }
             this.$store.state.courses.push(result)
+            this.$emit("save")
         })
         this.close()
     }
