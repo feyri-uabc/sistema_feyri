@@ -4,7 +4,7 @@
             <h1 class="text-center mt-2 mb-10 uppercase font-black text-2xl">Listado de laboratorios</h1>
 
             <div class="overflow-x-auto">
-                <h1 v-if="!$store.state.laboratories[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
+                <h1 v-if="!labs[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
                 <table v-else class="table table-zebra w-full">
                     <thead>
                     <tr>

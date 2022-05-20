@@ -4,7 +4,7 @@
             <h1 class="text-center mt-2 mb-10 uppercase font-black text-2xl">Listado de materias</h1>
 
             <div class="overflow-x-auto">
-                <h1 v-if="!$store.state.courses[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
+                <h1 v-if="!courses[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
                 <table v-else class="table table-zebra w-full">
                     <thead>
                     <tr>
@@ -53,6 +53,7 @@ import CardModal from "@/components/CardModal.vue";
 import Create from "@/components/modal_body/course/Create.vue";
 import Remove from "@/components/modal_body/course/Remove.vue";
 import Edit from "@/components/modal_body/course/Edit.vue";
+import IGroups from "@/services/api/interfaces/Groups";
 
 @Component({
     components: {CardModal, Create, Remove, Edit}
@@ -63,7 +64,8 @@ export default class Courses extends Vue {
     modalType: string | null = null // edit, remove
 
     get courses() {
-        return this.$store.state.courses
+        const _courses: ICourses[] = this.$store.state.courses
+        return _courses.sort((a, b) => (a.id && b.id) ?a.id - b.id :0)
     }
 
     openModal(type: string) {

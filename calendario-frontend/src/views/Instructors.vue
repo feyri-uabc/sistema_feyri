@@ -4,7 +4,7 @@
             <h1 class="text-center mt-2 mb-10 uppercase font-black text-2xl">Listado de Instructores</h1>
 
             <div class="overflow-x-auto">
-                <h1 v-if="!$store.state.instructors[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
+                <h1 v-if="!instructors[0]" class="text-center text-gray-500 mt-2 mb-10 uppercase font-black text-2xl">sin registros</h1>
                 <table v-else class="table table-zebra w-full">
                     <thead>
                     <tr>
@@ -15,7 +15,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="instructor in $store.state.instructors">
+                    <tr v-for="instructor in instructors">
                         <th>{{ instructor.id }}</th>
                         <td>{{ instructor.name }}</td>
                         <td>{{ instructor.contact }}</td>
@@ -60,7 +60,12 @@ import Edit from "@/components/modal_body/instructor/Edit.vue";
 export default class Instructors extends Vue {
     current_instructor: IInstructors | null = null
     open_modal: boolean = false
-    modalType: string | null = null // edit, remove
+    modalType: string | null = null
+
+    get instructors() {
+        const _instructors: IInstructors[] = this.$store.state.instructors
+        return _instructors.sort((a, b) => (a.id && b.id) ?a.id - b.id :0)
+    }
 
     openModal(type: string) {
         this.open_modal = true

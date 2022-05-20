@@ -34,7 +34,7 @@
                     </label>
                     <select v-model="reservation_data.group" @change="changeReservationGroup" class="select select-bordered">
                         <option disabled selected :value="null">Selecciona el grupo</option>
-                        <option :value="group.id" v-for="group in $store.state.groups">
+                        <option :value="group.id" v-for="group in groups">
                             {{group.name}}
                         </option>
                     </select>
@@ -47,7 +47,7 @@
                 </label>
                 <select v-model="reservation_data.course" @change="changeReservationCourse" class="select select-bordered">
                     <option disabled selected :value="null">Selecciona la materia</option>
-                    <option :value="course.id" v-for="course in $store.state.courses">
+                    <option :value="course.id" v-for="course in courses">
                         {{course.name}}
                     </option>
                 </select>
@@ -59,7 +59,7 @@
                 </label>
                 <select v-model="reservation_data.instructor" @change="changeReservationInstructor" class="select select-bordered">
                     <option disabled selected :value="null">Selecciona al docente</option>
-                    <option :value="instructor.id" v-for="instructor in $store.state.instructors">
+                    <option :value="instructor.id" v-for="instructor in instructors">
                         {{instructor.name}}
                     </option>
                 </select>
@@ -151,6 +151,10 @@
 import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import IReservations from "@/services/api/interfaces/IReservations";
 import APIServices from "@/services/api/APIServices";
+import IInstructors from "@/services/api/interfaces/IInstructors";
+import Instructors from "@/views/Instructors.vue";
+import ICourses from "@/services/api/interfaces/Courses";
+import IGroups from "@/services/api/interfaces/Groups";
 
 interface day_week {
     name: string
@@ -169,6 +173,10 @@ interface hour_day {
 interface index_block {
     day: number
     hour: number
+}
+
+interface ISubInstructors extends IInstructors {
+    subname: string
 }
 
 @Component({})
@@ -199,9 +207,42 @@ export default class Create extends Vue {
     changeReservationGroup = (e: any) => this.reservation_data.group = e.target.value
     changeReservationType = (e: any) => this.reservation_data.type = e.target.value
 
-    mounted() {
-        console.log(this.item_html)
+    ignoreCredentials: string[] = ["Dr.", "Dra.", "Psic.", "Mtro.", "Mtra."]
+    removeCredential(instructor: IInstructors): ISubInstructors {
+        let name = ""
+        for (let item of this.ignoreCredentials) {
+            if (instructor.name.includes(item)) {
+                name = instructor.name.replace(item, "")
+            }
+        }
+        if (name == "") name = instructor.name
+        return {
+            ...instructor,
+            subname: name.trim()
+        }
+    }
 
+    get instructors() {
+        const _instructors: IInstructors[] = this.$store.state.instructors
+        let instructors: IInstructors[] = []
+        _instructors.forEach(item => instructors.push(this.removeCredential(item)))
+        console.log(_instructors)
+        return instructors
+            .sort(this.sorter("subname", "id"))
+            .reverse()
+    }
+
+    get courses() {
+        const _courses: ICourses[] = this.$store.state.courses
+        return _courses.sort(this.sorter("name", "id")).reverse()
+    }
+
+    get groups() {
+        const _groups: IGroups[] = this.$store.state.groups
+        return _groups.sort(this.sorter("name", "id")).reverse()
+    }
+
+    mounted() {
         const _reservations = this.data_reservation
         this.removed = false
 
