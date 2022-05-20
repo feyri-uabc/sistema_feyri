@@ -32,7 +32,7 @@
 - [x] Correccion de ruta en dashboard para el calendario
 - [x] Modificar horario: 7 a 20
 - [x] Corregir reservaciones (sobreescribe los indices)
-- [ ] Mostrar todo el calendario en una sola pagina (boton para intercambiar interfaz)
+- [x] Mostrar todo el calendario en una sola pagina (boton para intercambiar interfaz)
 - [x] Corregir redireccionamiento al entrar directamente a la ruta de la aplicacion
 - [x] Ordenar valores de los Select en el formulario de crear Reservaciones
 - [x] Creacion entidades desde el Select del formulario Reservaciones

@@ -140,12 +140,12 @@ export default class Home extends Vue {
                     }
                     element.innerHTML = `
                         <div class="box-content-parent w-full p-2 h-full text-gray-900 ${this.reservation_type_data(tipo).color}" id="${id}">
-                            <div class="box-content" title="${ instructor[0].name }">
-                                <span>Docente:</span> <span class="text-sm font-bold">${ this.text_box(instructor[0].name) }</span>
-                            </div>
                             <div class="box-content" title="${ course[0].name }">
                                 <span>Materia:</span>
                                 <span class="text-sm font-bold">${ this.text_box(course[0].name) }</span>
+                            </div>
+                            <div class="box-content" title="${ instructor[0].name }">
+                                <span>Docente:</span> <span class="text-sm font-bold">${ this.text_box(instructor[0].name) }</span>
                             </div>
                             <div class="box-content" title="${ group[0].name }">
                                 <span>Grupo:</span>

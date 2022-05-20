@@ -113,6 +113,8 @@ export default class App extends Vue {
         this.route_is_home = value.name?.toLowerCase() === "home"
         this.$store.state.open_burger_main = false
         this.show_btn = this.$store.state.laboratories != null && !!this.$store.state.laboratories[0]
+
+        this.$store.state.show_expanded_calendar = this.route_is_home
     }
 
     select_lab(id: any) {

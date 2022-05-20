@@ -37,7 +37,10 @@ export default new Vuex.Store({
         //
         box_max_length: 40,
         //
-        max_reservation_weeks: 20
+        max_reservation_weeks: 20,
+        //
+        show_expanded_calendar: true,
+        expanded_calendar: false
     },
     getters: {
         stateIsEmpty(state: any) {
