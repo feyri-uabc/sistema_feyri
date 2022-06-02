@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CalendarReservations;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use PHPUnit\Exception;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -75,6 +74,30 @@ class CalendarReservationsController extends Controller
     public function show($id)
     {
         return CalendarReservations::find($id);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
+    public function update(Request $request, $id)
+    {
+        if (!$request->input("grouping") || !$request->input("instructor_id") || !$request->input("course_id") || !$request->input("group_id")) {
+            return null;
+        }
+
+        CalendarReservations::where('grouping', $request->input("grouping"))
+            ->update([
+                'instructor_id' => $request->input("instructor_id"),
+                'course_id' => $request->input("course_id"),
+            ]);
+
+        $reservation = CalendarReservations::firstWhere('grouping', $request->input("grouping"));
+        $status = $reservation->instructor_id == $request->input("instructor_id") && $reservation->course_id == $request->input("course_id");
+
+        if ($status) return "status: successful";
+        return null;
     }
 
 

@@ -188,7 +188,7 @@ interface index_block {
     hour: number
 }
 
-interface ISubInstructors extends IInstructors {
+export interface ISubInstructors extends IInstructors {
     subname: string
 }
 

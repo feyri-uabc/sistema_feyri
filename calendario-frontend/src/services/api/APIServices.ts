@@ -51,7 +51,7 @@ export default class APIServices {
             method: "POST",
             body: formData
         }
-        console.log(this.path + _path)
+
         return await fetch(this.path + _path, request)
             .then(data => data.json())
             .then((result: T | null) => result)
@@ -109,6 +109,16 @@ export default class APIServices {
 
     public static async CreateReservationMultiple(reservation: IReservations[]): Promise<IReservations | null> {
         return this.Create<IReservations>("reservations", {reservations: reservation}, true)
+    }
+
+    public static async UpdateReservation(reservation: IReservations): Promise<string | null> {
+        let updateData = {
+            instructor_id: reservation.instructor_id,
+            group_id: reservation.group_id,
+            course_id: reservation.course_id,
+            grouping: reservation.grouping
+        }
+        return this.Update<IReservations>("reservations/" + reservation.id, updateData)
     }
 
     // --
