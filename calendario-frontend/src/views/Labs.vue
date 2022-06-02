@@ -10,7 +10,7 @@
                     <tr>
                         <th/>
                         <th>Nombre</th>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th class="text-center print:hidden">Opciones</th>
                     </tr>
                     </thead>

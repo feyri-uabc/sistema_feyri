@@ -1,6 +1,6 @@
 <template>
     <div class="labs-modal">
-        <h1 class="font-black uppercase text-2xl text-center pb-4">reservacion</h1>
+        <h1 class="font-black uppercase text-2xl text-center pb-4">reservación</h1>
 
         <div class="flex w-full">
             <div class="grid flex-grow rounded-box place-items-center">
@@ -42,9 +42,7 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                        <span class="label-text">
-                            Seleccionar grupo
-                        </span>
+                        <span class="label-text">Seleccionar grupo:</span>
                 </label>
                 <select v-model="reservation_data.group" class="select select-bordered" @change="changeReservationGroup">
                     <option :selected="group.id === current_reservation.group_id" :value="group.id" v-for="group in groups">
@@ -55,9 +53,7 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                        <span class="label-text">
-                            Seleccionar materia
-                        </span>
+                        <span class="label-text">Seleccionar materia:</span>
                 </label>
                 <select v-model="reservation_data.course" class="select select-bordered" @change="changeReservationCourse">
                     <option :selected="course.id === current_reservation.course_id" :value="course.id" v-for="course in courses">
@@ -68,9 +64,7 @@
 
             <div class="form-control w-full pb-2">
                 <label class="label">
-                        <span class="label-text">
-                            Seleccionar docente
-                        </span>
+                        <span class="label-text">Seleccionar docente:</span>
                 </label>
                 <select v-model="reservation_data.instructor" class="select select-bordered" @change="changeReservationInstructor">
                     <option :selected="instructor.id === current_reservation.instructor_id" :value="instructor.id" v-for="instructor in instructors">
@@ -81,7 +75,7 @@
 
             <div class="form-control mb-4 px-2">
                 <label class="label">
-                    <span class="label-text text-justify text-xs"><b class="uppercase">Importante: </b>La edicion afectara a todas las reservaciones vinculadas, para verlas, presiona la prestaña de eliminar en la parte superior.</span>
+                    <span class="label-text text-justify text-xs"><b class="uppercase">Importante: </b>La edición afectara a todas las reservaciones vinculadas, para verlas, presiona la opción de eliminar en la parte superior.</span>
                 </label>
             </div>
 
@@ -107,7 +101,7 @@
             </div>
             <div class="form-control mb-8 mx-5">
                 <label class="label cursor-pointer">
-                    <span class="label-text">Eliminar solo la reservacion: <b>{{current_reservation.id}}</b></span>
+                    <span class="label-text">Eliminar solo la reservación: <b>{{current_reservation.id}}</b></span>
                     <input :disabled="disable_btn" v-model="unique_remove" type="checkbox" checked="checked" class="checkbox checkbox-primary">
                 </label>
             </div>
@@ -217,7 +211,7 @@ export default class Remove extends Vue {
     async update() {
         if (!this.current_reservation.grouping) return this.$store.state.alert = {
             type: "error", show: true,
-            message: "Error al actualizar el grupo al que pertenece la reservacion: " + this.current_reservation.id
+            message: "Error al actualizar el grupo al que pertenece la reservación: " + this.current_reservation.id
         }
 
         this.current_reservation.instructor_id = this.reservation_data.instructor
@@ -228,12 +222,12 @@ export default class Remove extends Vue {
             if (result == null) {
                 this.$store.state.alert = {
                     type: "error", show: true,
-                    message: "Error al actualizar el grupo al que pertenece la reservacion: " + this.current_reservation.id
+                    message: "Error al actualizar el grupo al que pertenece la reservación: " + this.current_reservation.id
                 }
             } else {
                 this.$store.state.alert = {
                     type: "success", show: true,
-                    message: "Actualizacion exitosa en el grupo al que pertenece la reservacion: " + this.current_reservation.id
+                    message: "Actualización exitosa en el grupo al que pertenece la reservación: " + this.current_reservation.id
                 }
 
                 for (let item of this.reservations_group) {
@@ -252,7 +246,7 @@ export default class Remove extends Vue {
     async remove() {
         if (!this.current_reservation.id) return this.$store.state.alert = {
             type: "error", show: true,
-            message: "Error al eliminar la reservacion: " + this.current_reservation.id
+            message: "Error al eliminar la reservación: " + this.current_reservation.id
         }
         this.disable_btn = true
         if (this.unique_remove) await this.removeId(this.current_reservation.id, this.item_html)
@@ -268,11 +262,11 @@ export default class Remove extends Vue {
     async removeId(id: number, item: HTMLElement | null): Promise<void> {
         await APIServices.DeleteReservation(id).then((result: string | null) => {
             if (!result) {
-                return this.$store.state.alert = { type: "error",  show: true,  message: "Error al eliminar la reservacion: " + id }
+                return this.$store.state.alert = { type: "error",  show: true,  message: "Error al eliminar la reservación: " + id }
             }
             this.$store.state.reservations = this.$store.state.reservations.filter((item: IReservations) => item.id !== id)
             if (item != null) item.innerHTML = ""
-            this.$store.state.alert = { type: "error",  show: true,  message: "Reservacion eliminada: " + id }
+            this.$store.state.alert = { type: "error",  show: true,  message: "Reservación eliminada: " + id }
         })
     }
 
@@ -287,12 +281,12 @@ export default class Remove extends Vue {
 
     sorter(firstKey: any, secondKey: any) {
         return function(a: any, b: any) {
-            if (a[firstKey] > b[firstKey]) return -1;
-            else if (a[firstKey] < b[firstKey]) return 1;
+            if (a[firstKey] > b[firstKey]) return -1
+            else if (a[firstKey] < b[firstKey]) return 1
             else {
-                if (a[secondKey] > b[secondKey]) return 1;
-                else if (a[secondKey] < b[secondKey]) return -1;
-                else return 0;
+                if (a[secondKey] > b[secondKey]) return 1
+                else if (a[secondKey] < b[secondKey]) return -1
+                else return 0
             }
         }
     }

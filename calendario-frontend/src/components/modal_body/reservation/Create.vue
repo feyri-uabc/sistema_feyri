@@ -10,7 +10,7 @@
             </CardModal>
         </div>
 
-        <h1 class="font-black uppercase text-2xl text-center">Crear reservacion</h1>
+        <h1 class="font-black uppercase text-2xl text-center">Crear reservación</h1>
         <h3 class="font-bold uppercase text-lg text-center">
             <span class="pr-2">{{data_reservation.day}}</span>{{data_reservation.hour}}
         </h3>
@@ -28,11 +28,11 @@
                 <div class="form-control w-full pb-4">
                     <label class="label">
                         <span :class="'label-text opacity-' + (reservation_data.type!=null ?'100' :'0')">
-                            Tipo de reservacion
+                            Tipo de reservación:
                         </span>
                     </label>
                     <select v-model="reservation_data.type" @change="changeReservationType" class="select select-bordered">
-                        <option disabled selected :value="null">Tipo de reservacion</option>
+                        <option disabled selected :value="null">Tipo de reservación</option>
                         <option :value="type.value" v-for="type in reservations_type">
                             {{type.value}}
                         </option>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-control w-full pb-4">
                     <label class="label">
-                        <span :class="'label-text opacity-' + (reservation_data.group!=null ?'100' :'0')">Selecciona el grupo</span>
+                        <span :class="'label-text opacity-' + (reservation_data.group!=null ?'100' :'0')">Selecciona el grupo:</span>
                     </label>
                     <select v-model="reservation_data.group" @change="changeReservationGroup" class="select select-bordered">
                         <option disabled selected :value="null">Selecciona el grupo</option>
@@ -55,7 +55,7 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                    <span :class="'label-text opacity-' + (reservation_data.course!=null ?'100' :'0')">Selecciona la materia</span>
+                    <span :class="'label-text opacity-' + (reservation_data.course!=null ?'100' :'0')">Selecciona la materia:</span>
                 </label>
                 <select v-model="reservation_data.course" @change="changeReservationCourse" class="select select-bordered">
                     <option disabled selected :value="null">Selecciona la materia</option>
@@ -69,10 +69,10 @@
 
             <div class="form-control w-full pb-4">
                 <label class="label">
-                    <span :class="'label-text opacity-' + (reservation_data.instructor!=null ?'100' :'0')">Selecciona al docente</span>
+                    <span :class="'label-text opacity-' + (reservation_data.instructor!=null ?'100' :'0')">Selecciona al instructor:</span>
                 </label>
                 <select v-model="reservation_data.instructor" @change="changeReservationInstructor" class="select select-bordered">
-                    <option disabled selected :value="null">Selecciona al docente</option>
+                    <option disabled selected :value="null">Selecciona al instructor</option>
                     <option :value="instructor.id" v-for="instructor in instructors">
                         {{instructor.name}}
                     </option>
@@ -83,7 +83,7 @@
 
             <div class="flex pb-4">
                 <label class="grid grid-cols-2 gap-6 label cursor-pointer">
-                    <span class="label-text">Reservacion unica</span>
+                    <span class="label-text">Reservación única</span>
                     <input v-model="reservation_unique" type="checkbox" checked="checked" class="checkbox checkbox-primary">
                 </label>
             </div>
@@ -117,7 +117,7 @@
 
         <div v-if="current_step > 0" class="step-message pt-2">
             <p class="font-bold uppercase mx-10">
-                Si ya existe una reservacion en la hora o dia seleccionado, se sobreescribira
+                Si ya existe una reservación en la hora o día seleccionado, se sobrescribirá
             </p>
         </div>
 
@@ -379,7 +379,7 @@ export default class Create extends Vue {
         }
 
         if (!this.index_day_hour_block) {
-            this.$store.state.alert = { type: "error",  show: true,  message: "Ocurrio un error al crear la reservacion" }
+            this.$store.state.alert = { type: "error",  show: true,  message: "Ocurrió un error al crear la reservación" }
             return this.close()
         }
 
@@ -433,7 +433,7 @@ export default class Create extends Vue {
         if (reservations_queue.length == 1) {
             await APIServices.CreateReservation(reservations_queue[0]).then((result: IReservations | null) => {
                 if (result) {
-                    this.$store.state.alert = { type: "success", show: true,  message: "Nueva reservacion: " + result.id }
+                    this.$store.state.alert = { type: "success", show: true,  message: "Nueva reservación: " + result.id }
                     this.$store.state.reservations.push(result)
                 }
             })
@@ -448,7 +448,7 @@ export default class Create extends Vue {
                     if (response) this.$store.state.reservations = response
                 })
             } else {
-                this.$store.state.alert = { type: "error", show: true,  message: "Ocurrio un error, por favor, recarga la aplicacion" }
+                this.$store.state.alert = { type: "error", show: true,  message: "Ocurrió un error, por favor, recarga la aplicación" }
             }
         })
 

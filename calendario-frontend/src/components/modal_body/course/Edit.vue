@@ -8,8 +8,8 @@
         </div>
 
         <div class="form-control w-full pb-4">
-            <label class="label"> <span class="label-text">Descripcion:</span> </label>
-            <input @keyup="changeIsValid" autocomplete="off" spellcheck="false" v-model="current_description" type="text" placeholder="No. Telefonico, direccion o correo-e" class="input input-bordered w-full">
+            <label class="label"> <span class="label-text">Descripción:</span> </label>
+            <input @keyup="changeIsValid" autocomplete="off" spellcheck="false" v-model="current_description" type="text" placeholder="Ej. Código del curso" class="input input-bordered w-full">
         </div>
 
         <div class="mt-2 flex justify-end">

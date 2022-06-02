@@ -10,7 +10,7 @@
                     <tr>
                         <th/>
                         <th>Nombre</th>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th class="text-center print:hidden">Opciones</th>
                     </tr>
                     </thead>
@@ -53,7 +53,6 @@ import CardModal from "@/components/CardModal.vue";
 import Create from "@/components/modal_body/course/Create.vue";
 import Remove from "@/components/modal_body/course/Remove.vue";
 import Edit from "@/components/modal_body/course/Edit.vue";
-import IGroups from "@/services/api/interfaces/Groups";
 
 @Component({
     components: {CardModal, Create, Remove, Edit}

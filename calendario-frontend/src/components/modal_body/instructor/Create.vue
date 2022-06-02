@@ -9,7 +9,7 @@
 
         <div class="form-control w-full pb-4">
             <label class="label"> <span class="label-text">Contacto:</span> </label>
-            <input @keyup="changeIsValid" autocomplete="off" spellcheck="false" v-model="current_contact" type="text" placeholder="No. Telefonico, direccion o correo-e" class="input input-bordered w-full">
+            <input @keyup="changeIsValid" autocomplete="off" spellcheck="false" v-model="current_contact" type="text" placeholder="No. Telefónico, dirección o correo-e" class="input input-bordered w-full">
         </div>
 
         <div class="mt-2 flex justify-end">

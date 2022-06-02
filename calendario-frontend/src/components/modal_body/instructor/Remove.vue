@@ -4,13 +4,13 @@
             <h1 class="font-black uppercase text-2xl text-center pb-4">Eliminar instructor</h1>
 
             <div class="form-control w-full pb-4">
-                <label class="label"> <span class="label-text">Nombre</span> </label>
-                <input disabled v-model="instructor.name" type="text" placeholder="Nombre del instructor"  class="input input-bordered w-full">
+                <label class="label"> <span class="label-text">Nombre:</span> </label>
+                <input disabled v-model="instructor.name" type="text" placeholder="Nombre del instructor" class="input input-bordered w-full">
             </div>
 
             <div class="form-control w-full pb-4">
-                <label class="label"> <span class="label-text">Contacto</span> </label>
-                <input disabled v-model="instructor.contact" type="text" placeholder="No. Telefonico, direccion o correo-e" class="input input-bordered w-full">
+                <label class="label"> <span class="label-text">Contacto:</span> </label>
+                <input disabled v-model="instructor.contact" type="text" placeholder="No. Telefónico, dirección o correo-e" class="input input-bordered w-full">
             </div>
 
             <div class="mt-2 flex justify-end">
