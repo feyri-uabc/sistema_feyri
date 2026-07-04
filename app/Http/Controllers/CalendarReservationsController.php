@@ -4,19 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\CalendarReservations;
 use Illuminate\Http\Request;
-use PHPUnit\Exception;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CalendarReservationsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return CalendarReservations::orderBy("id")->get();
+        $start = now()->subYear()->format('Y-m-d');
+
+        return CalendarReservations::whereRaw(
+            "STR_TO_DATE(CONCAT(select_year,'-',select_month,'-',select_day), '%Y-%c-%e') >= ?",
+            [$start]
+        )->orderBy("id")->get();
     }
 
     /**
