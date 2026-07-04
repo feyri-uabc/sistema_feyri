@@ -31,7 +31,10 @@ if (file_exists(__DIR__.'/../storage/framework/maintenance.php')) {
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../app/Patches/CarbonFix.php';
+\App\Patches\CarbonFix::patch();
+$loader = require __DIR__.'/../vendor/autoload.php';
+\App\Patches\CarbonFix::registerClassMap($loader);
 
 /*
 |--------------------------------------------------------------------------

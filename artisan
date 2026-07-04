@@ -15,7 +15,10 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
-require __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/app/Patches/CarbonFix.php';
+\App\Patches\CarbonFix::patch();
+$loader = require __DIR__.'/vendor/autoload.php';
+\App\Patches\CarbonFix::registerClassMap($loader);
 
 $app = require_once __DIR__.'/bootstrap/app.php';
 
