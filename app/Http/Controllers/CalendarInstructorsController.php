@@ -66,7 +66,7 @@ class CalendarInstructorsController extends Controller
         ]);
         
         $calendar = CalendarInstructors::find($id);
-        return $calendar->update($request->all());
+        return $calendar->update($request->only(['name', 'contact']));
     }
 
     /**

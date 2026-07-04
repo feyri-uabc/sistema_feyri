@@ -55,7 +55,7 @@ class CalendarCoursesController extends Controller
         ]);
 
         $course = CalendarCourses::find($id);
-        return $course->update($request->all());
+        return $course->update($request->only(['name', 'description']));
     }
 
     /**

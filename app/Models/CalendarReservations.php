@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSafeDates;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CalendarReservations extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSafeDates;
 
     protected $table = "calendar_reservations";
-    protected $guarded = ["id"];
-
+    protected $fillable = [
+        "lab_id", "instructor_id", "course_id", "group_id",
+        "select_year", "select_month", "select_day", "select_hour",
+        "tipo", "grouping"
+    ];
 
     public function lab(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

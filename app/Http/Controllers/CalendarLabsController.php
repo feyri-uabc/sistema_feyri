@@ -57,7 +57,7 @@ class CalendarLabsController extends Controller
         ]);
 
         $lab = CalendarLabs::find($id);
-        return $lab->update($request->all());
+        return $lab->update($request->only(['name', 'description']));
     }
 
     /**

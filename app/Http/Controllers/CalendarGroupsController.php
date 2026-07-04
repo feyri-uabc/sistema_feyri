@@ -55,7 +55,7 @@ class CalendarGroupsController extends Controller
         ]);
 
         $group = CalendarGroups::find($id);
-        return $group->update($request->all());
+        return $group->update($request->only(['name', 'description']));
     }
 
     /**
